@@ -137,7 +137,7 @@
   }
 
   html {
-    font-size: 14px;
+    font-size: 15.5px;
   }
 
   body {
@@ -146,12 +146,23 @@
     font-family: var(--font-sans);
     font-feature-settings: "cv11", "ss01", "cv02", "cv03";
     -webkit-font-smoothing: antialiased;
-    line-height: 1.55;
+    line-height: 1.6;
   }
 
   h1, h2, h3, h4 {
-    letter-spacing: -0.02em;
-    font-weight: 600;
-    line-height: 1.2;
+    font-family: "Source Serif 4", "Inter", ui-serif, Georgia, serif;
+    letter-spacing: -0.015em;
+    font-weight: 700;
+    line-height: 1.15;
+    color: oklch(0.18 0.008 25);
+  }
+
+  /* Editorial small-caps style for section labels */
+  .eyebrow {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-primary);
   }
 }
