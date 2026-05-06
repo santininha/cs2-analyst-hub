@@ -111,7 +111,7 @@ function PlayerPage() {
         </TabsContent>
 
         <TabsContent value="t" className="mt-4">
-          <Card className="border-side-tr/40">
+          <Card className="border-border/60">
             <CardHeader>
               <CardTitle className="text-lg text-side-tr">T Side por mapa</CardTitle>
             </CardHeader>
@@ -122,7 +122,7 @@ function PlayerPage() {
         </TabsContent>
 
         <TabsContent value="ct" className="mt-4">
-          <Card className="border-blue-300/40">
+          <Card className="border-border/60">
             <CardHeader>
               <CardTitle className="text-lg text-side-ct">CT Side por mapa</CardTitle>
             </CardHeader>
@@ -213,12 +213,12 @@ function MapList({ stats, side }: { stats: PlayerMapStat[]; side: Side }) {
                     <span className="text-xs font-bold text-side-ct uppercase">CT</span>
                     <span className="font-mono text-sm">{s.ctRating.toFixed(2)}</span>
                   </div>
-                  <Progress value={(s.ctRating / 1.6) * 100} className="h-2" />
+                  <Progress value={(s.ctRating / 1.6) * 100} className="h-2 bg-side-ct/15" indicatorClassName="bg-side-ct" />
                   <div className="flex items-center justify-between mt-3">
                     <span className="text-xs font-bold text-side-tr uppercase">TR</span>
                     <span className="font-mono text-sm">{s.trRating.toFixed(2)}</span>
                   </div>
-                  <Progress value={(s.trRating / 1.6) * 100} className="h-2" />
+                  <Progress value={(s.trRating / 1.6) * 100} className="h-2 bg-side-tr/15" indicatorClassName="bg-side-tr" />
                 </div>
                 <div className="rounded-md bg-muted/40 p-3 grid grid-cols-2 gap-3 text-center">
                   <div>
