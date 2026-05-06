@@ -38,6 +38,8 @@ export type CSMap = {
   trWinRate: number;
   topTeams: string[];
   topPlayers: string[];
+  /** False if the map is no longer in the current Active Duty rotation. */
+  active?: boolean;
 };
 
 export type Match = {
