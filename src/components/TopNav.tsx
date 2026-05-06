@@ -49,7 +49,7 @@ export function TopNav() {
               <Link
                 key={n.url}
                 to={n.url}
-                className={`relative px-3 py-1.5 text-[12.5px] font-medium rounded-md whitespace-nowrap transition-colors ${
+                className={`relative px-3 py-1.5 text-[13.5px] font-medium rounded-md whitespace-nowrap transition-colors ${
                   active
                     ? "text-foreground"
                     : "text-muted-foreground hover:text-foreground hover:bg-muted/60"
