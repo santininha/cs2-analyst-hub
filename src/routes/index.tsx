@@ -105,7 +105,11 @@ function AnalystDesk() {
           <SideCard eyebrow="Trending" title="Times em alta" icon={<Flame className="h-3.5 w-3.5" />}>
             <ul className="divide-y divide-border/60">
               {trendingTeams.map((t) => (
-                <li key={t.id} className="flex items-center gap-3 py-2.5 first:pt-0 last:pb-0">
+                <li
+                  key={t.id}
+                  className="flex items-center gap-3 py-2.5 first:pt-0 last:pb-0 pl-2 -ml-2 border-l-2 border-transparent transition-colors"
+                  style={t.colorPrimary ? { borderLeftColor: `${t.colorPrimary}66` } : undefined}
+                >
                   <span className="text-[11px] font-semibold text-muted-foreground tabular-nums w-5">#{t.worldRank}</span>
                   <TeamBadge team={t} size="sm" />
                   <div className="flex-1 min-w-0">
