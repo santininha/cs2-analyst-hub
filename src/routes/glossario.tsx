@@ -83,7 +83,7 @@ function GlossaryPage() {
                   <span className="text-[11px] font-bold uppercase tracking-wider text-primary">{g.term}</span>
                   <Badge variant="outline" className="text-[10px] font-medium">{g.category}</Badge>
                 </div>
-                <p className="text-[15px] md:text-base font-semibold leading-snug text-foreground">
+                <p className="text-lg md:text-xl font-bold leading-snug text-foreground">
                   "{g.phrase}"
                 </p>
               </div>
