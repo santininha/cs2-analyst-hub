@@ -122,14 +122,18 @@ export const players: Player[] = [
 ];
 
 export const maps: CSMap[] = [
-  { id: "mirage", name: "Mirage", pickRate: 78, ctWinRate: 52, trWinRate: 48, topTeams: ["vitality", "navi", "spirit"], topPlayers: ["zywoo", "donk", "molodoy"] },
-  { id: "inferno", name: "Inferno", pickRate: 82, ctWinRate: 56, trWinRate: 44, topTeams: ["vitality", "furia"], topPlayers: ["zywoo", "kscerato"] },
-  { id: "nuke", name: "Nuke", pickRate: 65, ctWinRate: 58, trWinRate: 42, topTeams: ["g2", "navi"], topPlayers: ["niko", "yuurih"] },
-  { id: "ancient", name: "Ancient", pickRate: 60, ctWinRate: 49, trWinRate: 51, topTeams: ["spirit", "vitality"], topPlayers: ["donk", "biguzera"] },
-  { id: "anubis", name: "Anubis", pickRate: 55, ctWinRate: 47, trWinRate: 53, topTeams: ["g2", "spirit"], topPlayers: ["niko"] },
-  { id: "overpass", name: "Overpass", pickRate: 50, ctWinRate: 54, trWinRate: 46, topTeams: ["spirit", "furia"], topPlayers: ["chopper", "fallen"] },
-  { id: "vertigo", name: "Vertigo", pickRate: 30, ctWinRate: 51, trWinRate: 49, topTeams: ["mibr"], topPlayers: ["exit"] },
+  { id: "dust2", name: "Dust2", pickRate: 62, ctWinRate: 53, trWinRate: 47, topTeams: ["vitality", "g2"], topPlayers: ["zywoo", "niko"], active: true },
+  { id: "mirage", name: "Mirage", pickRate: 78, ctWinRate: 52, trWinRate: 48, topTeams: ["vitality", "navi", "spirit"], topPlayers: ["zywoo", "donk", "molodoy"], active: true },
+  { id: "inferno", name: "Inferno", pickRate: 82, ctWinRate: 56, trWinRate: 44, topTeams: ["vitality", "furia"], topPlayers: ["zywoo", "kscerato"], active: true },
+  { id: "nuke", name: "Nuke", pickRate: 65, ctWinRate: 58, trWinRate: 42, topTeams: ["g2", "navi"], topPlayers: ["niko", "yuurih"], active: true },
+  { id: "ancient", name: "Ancient", pickRate: 60, ctWinRate: 49, trWinRate: 51, topTeams: ["spirit", "vitality"], topPlayers: ["donk", "biguzera"], active: true },
+  { id: "anubis", name: "Anubis", pickRate: 55, ctWinRate: 47, trWinRate: 53, topTeams: ["g2", "spirit"], topPlayers: ["niko"], active: true },
+  { id: "overpass", name: "Overpass", pickRate: 50, ctWinRate: 54, trWinRate: 46, topTeams: ["spirit", "furia"], topPlayers: ["chopper", "fallen"], active: true },
+  // Historical only — kept for old match data, never used as current rotation.
+  { id: "vertigo", name: "Vertigo", pickRate: 0, ctWinRate: 51, trWinRate: 49, topTeams: ["mibr"], topPlayers: ["exit"], active: false },
 ];
+
+export const activeMaps = (): CSMap[] => maps.filter((m) => m.active !== false);
 
 export const matches: Match[] = [
   {
