@@ -311,7 +311,7 @@ export type PlayerMapStat = {
 export function getPlayerMapStats(playerId: string): PlayerMapStat[] {
   const p = getPlayer(playerId);
   if (!p) return [];
-  return maps.map((m) => {
+  return activeMaps().map((m) => {
     const r = hash(playerId + m.id);
     const isStrong = p.strongMaps.includes(m.name);
     const isWeak = p.weakMaps.includes(m.name);
