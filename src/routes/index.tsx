@@ -249,7 +249,10 @@ function FeaturedMatch({ matchId }: { matchId: string }) {
             <div className="flex items-center gap-3">
               <TeamBadge team={a} size="lg" />
               <div>
-                <div className="font-semibold text-[16px] leading-tight">{a.name}</div>
+                <div className="font-semibold text-[16px] leading-tight flex items-center gap-1.5">
+                  {a.name}
+                  <DataSourceTag team={a} size="xs" />
+                </div>
                 <div className="text-[12px] text-muted-foreground">#{a.worldRank} · {a.winRate}%</div>
               </div>
             </div>
@@ -257,7 +260,10 @@ function FeaturedMatch({ matchId }: { matchId: string }) {
             <div className="flex items-center gap-3">
               <TeamBadge team={b} size="lg" />
               <div>
-                <div className="font-semibold text-[16px] leading-tight">{b.name}</div>
+                <div className="font-semibold text-[16px] leading-tight flex items-center gap-1.5">
+                  {b.name}
+                  <DataSourceTag team={b} size="xs" />
+                </div>
                 <div className="text-[12px] text-muted-foreground">#{b.worldRank} · {b.winRate}%</div>
               </div>
             </div>
