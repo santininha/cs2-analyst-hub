@@ -1,6 +1,8 @@
 import { Outlet, Link, createRootRoute, HeadContent, Scripts } from "@tanstack/react-router";
 import { Toaster } from "@/components/ui/sonner";
-import { TopNav } from "@/components/TopNav";
+import { SidebarProvider, SidebarTrigger, SidebarInset } from "@/components/ui/sidebar";
+import { WorkspaceSidebar } from "@/components/WorkspaceSidebar";
+import { LiveDataBadge } from "@/components/LiveDataBadge";
 
 import appCss from "../styles.css?url";
 
@@ -15,7 +17,7 @@ function NotFoundComponent() {
             to="/"
             className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:opacity-90"
           >
-            Voltar ao Analyst Desk
+            Voltar à Mesa de Análise
           </Link>
         </div>
       </div>
@@ -40,7 +42,7 @@ export const Route = createRootRoute({
 
 function RootShell({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="pt-BR">
+    <html lang="pt-BR" className="dark">
       <head>
         <HeadContent />
       </head>
@@ -54,14 +56,38 @@ function RootShell({ children }: { children: React.ReactNode }) {
 
 function RootComponent() {
   return (
-    <div className="min-h-screen flex flex-col bg-background">
-      <TopNav />
-      <main className="flex-1 px-4 md:px-6 py-6 md:py-8">
-        <div className="max-w-[1400px] mx-auto">
-          <Outlet />
-        </div>
-      </main>
+    <SidebarProvider
+      style={
+        {
+          "--sidebar-width": "16rem",
+          "--sidebar-width-icon": "3.25rem",
+        } as React.CSSProperties
+      }
+    >
+      <div className="min-h-screen flex w-full bg-background">
+        <WorkspaceSidebar />
+        <SidebarInset className="flex flex-col min-w-0">
+          <header className="sticky top-0 z-20 h-12 flex items-center gap-3 px-4 border-b border-border/60 bg-background/85 backdrop-blur-md">
+            <SidebarTrigger className="-ml-1" />
+            <div className="h-4 w-px bg-border/80" />
+            <span className="text-[11px] uppercase tracking-[0.14em] font-semibold text-muted-foreground/70">
+              Workspace
+            </span>
+            <div className="ml-auto flex items-center gap-3">
+              <LiveDataBadge />
+              <span className="hidden md:inline text-[11px] text-muted-foreground">
+                <span className="text-foreground/80 font-semibold">Caster ao vivo</span>
+              </span>
+            </div>
+          </header>
+          <main className="flex-1 px-4 md:px-8 py-6 md:py-8">
+            <div className="max-w-[1320px] mx-auto">
+              <Outlet />
+            </div>
+          </main>
+        </SidebarInset>
+      </div>
       <Toaster />
-    </div>
+    </SidebarProvider>
   );
 }
