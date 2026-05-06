@@ -1,12 +1,13 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { PageHeader } from "@/components/PageHeader";
 import { TeamBadge } from "@/components/TeamBadge";
 import { teams, getTeamPlayers } from "@/data/mock";
-import { ChevronDown, ChevronRight, Flame } from "lucide-react";
+import { ChevronDown, ChevronRight, Flame, Search } from "lucide-react";
 
 export const Route = createFileRoute("/jogadores/")({
   head: () => ({
@@ -20,7 +21,16 @@ export const Route = createFileRoute("/jogadores/")({
 
 function TeamsList() {
   const [openId, setOpenId] = useState<string | null>(teams[0]?.id ?? null);
-  const sorted = [...teams].sort((a, b) => a.worldRank - b.worldRank);
+  const [query, setQuery] = useState("");
+  const sorted = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    const list = [...teams].sort((a, b) => a.worldRank - b.worldRank);
+    if (!q) return list;
+    return list.filter((t) => {
+      if (t.name.toLowerCase().includes(q) || t.tag.toLowerCase().includes(q)) return true;
+      return getTeamPlayers(t.id).some((p) => p.nick.toLowerCase().includes(q));
+    });
+  }, [query]);
 
   return (
     <div className="max-w-5xl mx-auto">
@@ -28,6 +38,16 @@ function TeamsList() {
         title="Times & Jogadores"
         subtitle="Selecione um time para ver seu elenco. Sem listas genéricas — só contexto que importa."
       />
+
+      <div className="relative mb-4">
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+        <Input
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder="Buscar time, tag ou jogador…"
+          className="pl-10 h-10 bg-card text-[13px]"
+        />
+      </div>
 
       <div className="grid gap-3">
         {sorted.map((t) => {
