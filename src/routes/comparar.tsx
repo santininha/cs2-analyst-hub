@@ -10,7 +10,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
 import { Button } from "@/components/ui/button";
-import { teams, getTeam, getTeamPlayers, getTeamMapStats, getTeamMapHistory, maps, matches } from "@/data/mock";
+import { teams, getTeam, getTeamPlayers, getTeamMapStats, getTeamMapHistory, activeMaps, matches } from "@/data/mock";
 import { Mic, TrendingUp, TrendingDown, Check, ChevronsUpDown } from "lucide-react";
 
 export const Route = createFileRoute("/comparar")({
