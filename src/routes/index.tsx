@@ -3,6 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { TeamBadge } from "@/components/TeamBadge";
+import { DataSourceTag } from "@/components/DataSourceTag";
 import {
   matches,
   getTeam,
