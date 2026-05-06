@@ -111,7 +111,7 @@ function PlayerPage() {
         </TabsContent>
 
         <TabsContent value="t" className="mt-4">
-          <Card className="border-side-tr/40">
+          <Card className="border-border/60">
             <CardHeader>
               <CardTitle className="text-lg text-side-tr">T Side por mapa</CardTitle>
             </CardHeader>
@@ -122,7 +122,7 @@ function PlayerPage() {
         </TabsContent>
 
         <TabsContent value="ct" className="mt-4">
-          <Card className="border-blue-300/40">
+          <Card className="border-border/60">
             <CardHeader>
               <CardTitle className="text-lg text-side-ct">CT Side por mapa</CardTitle>
             </CardHeader>
