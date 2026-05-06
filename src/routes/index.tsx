@@ -231,6 +231,8 @@ function FeaturedMatch({ matchId }: { matchId: string }) {
   const m = matches.find((x) => x.id === matchId)!;
   const a = getTeam(m.teamAId)!;
   const b = getTeam(m.teamBId)!;
+  const rosterA = useRoster(a.id);
+  const rosterB = useRoster(b.id);
   return (
     <Card className="overflow-hidden border-border/60">
       <div className="grid md:grid-cols-[1fr_auto] items-stretch">
