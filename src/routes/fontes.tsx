@@ -55,7 +55,7 @@ function DataSources() {
 }
 
 function GridStatusCard() {
-  const { loading, error, gridCount, matchedCount, lastSync, source, cached } = useTeams();
+  const { loading, error, gridCount, matchedCount, rosterCount, lastSync, source, cached } = useTeams();
   const connected = !error && gridCount > 0;
   const usingFallback = source === "mock" || matchedCount === 0;
 
