@@ -320,8 +320,17 @@ function MatchRow({ matchId, analyzing }: { matchId: string; analyzing?: boolean
       }`}
       style={accent ? { borderLeftColor: `${accent}55` } : undefined}
     >
-      <div className="flex items-center justify-between mb-2.5">
-        <span className="text-[10.5px] uppercase tracking-[0.12em] text-muted-foreground font-semibold truncate">{m.event}</span>
+      <div className="flex items-center justify-between mb-2.5 gap-2">
+        <span className="text-[10.5px] uppercase tracking-[0.12em] text-muted-foreground font-semibold truncate flex-1">{m.event}</span>
+        {(a.gridId || b.gridId) && (
+          <span
+            title="Times com dados reais GRID"
+            className="text-[9px] uppercase tracking-[0.1em] font-semibold px-1.5 py-[1.5px] rounded bg-emerald-500/10 text-emerald-300/90 border border-emerald-500/25 inline-flex items-center gap-1"
+          >
+            <span className="h-1 w-1 rounded-full bg-emerald-400" />
+            Dados reais
+          </span>
+        )}
         <Badge
           variant={m.status === "upcoming" ? "default" : m.status === "live" ? "destructive" : "secondary"}
           className="text-[10px]"
