@@ -1,10 +1,11 @@
 /**
  * Central source of truth for the CS2 competitive map pool (Active Duty).
  *
- * Any UI that talks about "current rotation", "matchup picks", "team strengths
- * by map" or "caster prep" must read from here — never hardcode map lists in
- * components. If Valve rotates a map in/out, change it here and the whole app
- * follows.
+ * O map pool é intencionalmente manual/configurável para evitar dados
+ * desatualizados gerados automaticamente. Quando a Valve alterar o Active
+ * Duty, atualizar apenas o objeto `CURRENT_ACTIVE_DUTY_MAP_POOL` abaixo —
+ * todas as telas (Análise de Mapas, Sala da Partida, Laboratório de Times,
+ * Fontes de Dados, etc.) seguem essa única fonte de verdade.
  */
 
 export type MapPoolEntry = {
@@ -18,31 +19,66 @@ export type MapPoolEntry = {
   removedAt?: string;
 };
 
-/** Active Duty map pool — competitive rotation as of 2026-05. */
-export const ACTIVE_DUTY: MapPoolEntry[] = [
-  { id: "dust2", name: "Dust2", active: true },
-  { id: "mirage", name: "Mirage", active: true },
-  { id: "inferno", name: "Inferno", active: true },
-  { id: "nuke", name: "Nuke", active: true },
-  { id: "ancient", name: "Ancient", active: true },
-  { id: "overpass", name: "Overpass", active: true },
-  { id: "anubis", name: "Anubis", active: true },
-];
+export type ActiveDutyConfig = {
+  season: string;
+  lastVerifiedAt: string;
+  sourceLabel: string;
+  activeMaps: MapPoolEntry[];
+  inactiveMaps: MapPoolEntry[];
+};
 
-/** Maps that have been in past rotations but are NOT current Active Duty. */
-export const HISTORICAL_MAPS: MapPoolEntry[] = [
-  { id: "vertigo", name: "Vertigo", active: false, removedAt: "2025-10-01" },
-  { id: "train", name: "Train", active: false, removedAt: "2024-09-01" },
-  { id: "cache", name: "Cache", active: false, removedAt: "2020-04-01" },
-];
+/**
+ * ÚNICA fonte de verdade do map pool. Editar aqui ao mudar a rotação.
+ */
+export const CURRENT_ACTIVE_DUTY_MAP_POOL: ActiveDutyConfig = {
+  season: "CS2 2026 - atual",
+  lastVerifiedAt: new Date().toISOString(),
+  sourceLabel: "Configuração manual validada",
+  activeMaps: [
+    { id: "dust2", name: "Dust2", active: true },
+    { id: "mirage", name: "Mirage", active: true },
+    { id: "inferno", name: "Inferno", active: true },
+    { id: "nuke", name: "Nuke", active: true },
+    { id: "ancient", name: "Ancient", active: true },
+    { id: "overpass", name: "Overpass", active: true },
+    { id: "anubis", name: "Anubis", active: true },
+  ],
+  inactiveMaps: [
+    { id: "vertigo", name: "Vertigo", active: false, removedAt: "2025-10-01" },
+    { id: "train", name: "Train", active: false, removedAt: "2024-09-01" },
+    { id: "cache", name: "Cache", active: false, removedAt: "2020-04-01" },
+  ],
+};
 
-export const ALL_MAPS: MapPoolEntry[] = [...ACTIVE_DUTY, ...HISTORICAL_MAPS];
+// =============================================================================
+// Derived collections + lookups (always read from CURRENT_ACTIVE_DUTY_MAP_POOL)
+// =============================================================================
 
-const NAME_INDEX: Record<string, MapPoolEntry> = {};
-for (const m of ALL_MAPS) {
-  NAME_INDEX[m.id.toLowerCase()] = m;
-  NAME_INDEX[m.name.toLowerCase()] = m;
+export function getActiveMaps(): MapPoolEntry[] {
+  return CURRENT_ACTIVE_DUTY_MAP_POOL.activeMaps;
 }
+
+export function getInactiveMaps(): MapPoolEntry[] {
+  return CURRENT_ACTIVE_DUTY_MAP_POOL.inactiveMaps;
+}
+
+/** Backwards-compatible aliases used across the app. */
+export const ACTIVE_DUTY: MapPoolEntry[] = CURRENT_ACTIVE_DUTY_MAP_POOL.activeMaps;
+export const HISTORICAL_MAPS: MapPoolEntry[] = CURRENT_ACTIVE_DUTY_MAP_POOL.inactiveMaps;
+export const ALL_MAPS: MapPoolEntry[] = [
+  ...CURRENT_ACTIVE_DUTY_MAP_POOL.activeMaps,
+  ...CURRENT_ACTIVE_DUTY_MAP_POOL.inactiveMaps,
+];
+
+function buildIndex(): Record<string, MapPoolEntry> {
+  const idx: Record<string, MapPoolEntry> = {};
+  for (const m of ALL_MAPS) {
+    idx[m.id.toLowerCase()] = m;
+    idx[m.name.toLowerCase()] = m;
+  }
+  return idx;
+}
+const NAME_INDEX = buildIndex();
 
 export function getMapMeta(idOrName: string): MapPoolEntry | undefined {
   return NAME_INDEX[idOrName.toLowerCase()];
@@ -53,14 +89,15 @@ export function isActiveMap(idOrName: string): boolean {
 }
 
 /** Active map IDs for filtering downstream data structures. */
-export const ACTIVE_MAP_IDS: ReadonlyArray<string> = ACTIVE_DUTY.map((m) => m.id);
+export const ACTIVE_MAP_IDS: ReadonlyArray<string> = getActiveMaps().map((m) => m.id);
 
-/**
- * Map pool source/diagnostic metadata. Currently configured statically; a
- * future integration can replace `source` with a live feed.
- */
+// =============================================================================
+// Status (consumed by /fontes and the MapPoolStatusCard)
+// =============================================================================
+
 export type MapPoolStatus = {
-  source: "static-config";
+  season: string;
+  source: "manual-config";
   sourceLabel: string;
   lastCheckedAt: string;
   active: MapPoolEntry[];
@@ -69,11 +106,12 @@ export type MapPoolStatus = {
 
 export function getMapPoolStatus(): MapPoolStatus {
   return {
-    source: "static-config",
-    sourceLabel: "Configuração interna (src/lib/mapPool.ts)",
-    lastCheckedAt: new Date().toISOString(),
-    active: ACTIVE_DUTY,
-    historical: HISTORICAL_MAPS,
+    season: CURRENT_ACTIVE_DUTY_MAP_POOL.season,
+    source: "manual-config",
+    sourceLabel: CURRENT_ACTIVE_DUTY_MAP_POOL.sourceLabel,
+    lastCheckedAt: CURRENT_ACTIVE_DUTY_MAP_POOL.lastVerifiedAt,
+    active: getActiveMaps(),
+    historical: getInactiveMaps(),
   };
 }
 
@@ -109,9 +147,7 @@ export type TeamScope = {
   id: TeamScopeId;
   label: string;
   description: string;
-  /** Status of the underlying ranking data source. */
   status: "pending-integration" | "live";
-  /** Where the ranking will eventually come from. */
   plannedSource: string;
 };
 

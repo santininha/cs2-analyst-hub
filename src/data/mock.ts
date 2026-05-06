@@ -133,7 +133,10 @@ export const maps: CSMap[] = [
   { id: "vertigo", name: "Vertigo", pickRate: 0, ctWinRate: 51, trWinRate: 49, topTeams: ["mibr"], topPlayers: ["exit"], active: false },
 ];
 
-export const activeMaps = (): CSMap[] => maps.filter((m) => m.active !== false);
+// Filter mock maps using the central Active Duty config (single source of truth).
+import { ACTIVE_MAP_IDS as _ACTIVE_MAP_IDS } from "@/lib/mapPool";
+export const activeMaps = (): CSMap[] =>
+  maps.filter((m) => _ACTIVE_MAP_IDS.includes(m.id));
 
 export const matches: Match[] = [
   {
