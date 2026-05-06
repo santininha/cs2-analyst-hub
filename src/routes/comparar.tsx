@@ -48,18 +48,57 @@ function Compare() {
     return { total: list.length, list };
   }, [aId, bId]);
 
+  const aPlayers = getTeamPlayers(aId);
+  const bPlayers = getTeamPlayers(bId);
+  const aStar = [...aPlayers].sort((x, y) => y.rating - x.rating)[0];
+  const bStar = [...bPlayers].sort((x, y) => y.rating - x.rating)[0];
+
   const insights = useMemo(() => {
     const out: string[] = [];
-    if (a.winRate > b.winRate)
-      out.push(`${a.name} tem win rate geral ${a.winRate}% contra ${b.winRate}% de ${b.name}.`);
-    else
-      out.push(`${b.name} chega mais sólida: ${b.winRate}% de win rate contra ${a.winRate}% de ${a.name}.`);
-    if (aBest[0]) out.push(`Mapa favorito de ${a.name}: ${maps.find(m=>m.id===aBest[0].mapId)?.name} (${aBest[0].winRate}%).`);
-    if (bBest[0]) out.push(`${b.name} é forte no ${maps.find(m=>m.id===bBest[0].mapId)?.name} — ${bBest[0].winRate}% de wins.`);
-    if (aWorst[0]) out.push(`Cuidado: ${a.name} costuma penar no ${maps.find(m=>m.id===aWorst[0].mapId)?.name} (apenas ${aWorst[0].winRate}%).`);
-    out.push(`Top do ranking mundial: ${a.name} #${a.worldRank} vs ${b.name} #${b.worldRank}.`);
+    const diff = a.winRate - b.winRate;
+    if (Math.abs(diff) >= 5) {
+      const fav = diff > 0 ? a : b;
+      out.push(`${fav.name} chega como favorito — ${Math.abs(diff)}pp de vantagem em win rate geral.`);
+    } else {
+      out.push(`Confronto equilibrado: ${a.winRate}% × ${b.winRate}% de win rate.`);
+    }
+
+    // best map advantages
+    sharedMaps.forEach(({ map, a: sa, b: sb }) => {
+      if (sa && sb) {
+        const d = sa.winRate - sb.winRate;
+        if (Math.abs(d) >= 15) {
+          const winner = d > 0 ? a : b;
+          out.push(`${winner.name} tem vantagem clara no ${map.name} (${Math.abs(d)}pp acima).`);
+        }
+      }
+    });
+
+    if (aBest[0]) {
+      const mp = maps.find(m => m.id === aBest[0].mapId)?.name;
+      out.push(`Melhor mapa de ${a.name}: ${mp} (${aBest[0].winRate}%).`);
+    }
+    if (bBest[0]) {
+      const mp = maps.find(m => m.id === bBest[0].mapId)?.name;
+      out.push(`Melhor mapa de ${b.name}: ${mp} (${bBest[0].winRate}%).`);
+    }
+    if (aWorst[0]) {
+      const mp = maps.find(m => m.id === aWorst[0].mapId)?.name;
+      out.push(`Ponto fraco de ${a.name}: ${mp} (apenas ${aWorst[0].winRate}%).`);
+    }
+    if (bWorst[0]) {
+      const mp = maps.find(m => m.id === bWorst[0].mapId)?.name;
+      out.push(`Ponto fraco de ${b.name}: ${mp} (apenas ${bWorst[0].winRate}%).`);
+    }
+
+    if (aStar && bStar) {
+      const top = aStar.rating >= bStar.rating ? aStar : bStar;
+      const topTeam = aStar.rating >= bStar.rating ? a : b;
+      out.push(`${topTeam.name} depende muito de ${top.nick} (rating ${top.rating.toFixed(2)}).`);
+    }
+
     return out;
-  }, [a, b, aBest, aWorst, bBest]);
+  }, [a, b, aBest, aWorst, bBest, bWorst, sharedMaps, aStar, bStar]);
 
   return (
     <div className="max-w-7xl mx-auto">
