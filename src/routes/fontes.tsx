@@ -3,6 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { PageHeader } from "@/components/PageHeader";
 import { useIntegrationStatus } from "@/lib/integrationStatus";
+import { useMatches } from "@/contexts/MatchesContext";
 import { MapPoolStatusCard } from "@/components/MapPoolStatusCard";
 import { TEAM_SCOPES, DEFAULT_ANALYSIS_WINDOW } from "@/lib/mapPool";
 import { Trophy, Globe2 } from "lucide-react";
@@ -84,6 +85,7 @@ function toneClasses(tone: Tone) {
 
 function DataSourcesPage() {
   const s = useIntegrationStatus();
+  const matchesCtx = useMatches();
 
   const gridTone: Tone =
     s.gridState === "connected"
@@ -283,6 +285,52 @@ function DataSourcesPage() {
             <span className="text-muted-foreground">
               O fallback mantém o app navegável caso a GRID não responda.
             </span>
+          }
+        />
+
+        {/* Partidas reais */}
+        <StatusCard
+          icon={Swords}
+          tone={matchesCtx.gridCount > 0 ? "ok" : matchesCtx.loading ? "idle" : "warn"}
+          title="Partidas (GRID)"
+          subtitle={
+            matchesCtx.loading
+              ? "Conectando GRID · carregando partidas…"
+              : matchesCtx.gridCount > 0
+                ? `${matchesCtx.gridCount} partidas reais carregadas`
+                : "Nenhuma partida real — usando fallback mock"
+          }
+          loading={matchesCtx.loading}
+          rows={[
+            { label: "Total", value: <Num>{matchesCtx.matches.length}</Num> },
+            { label: "Ao vivo", value: <Num>{matchesCtx.live.length}</Num> },
+            { label: "Próximas", value: <Num>{matchesCtx.upcoming.length}</Num> },
+            { label: "Finalizadas", value: <Num>{matchesCtx.completed.length}</Num> },
+            {
+              label: "Fonte",
+              value: (
+                <span className="text-[12px] uppercase tracking-[0.1em] text-muted-foreground">
+                  {matchesCtx.source}
+                </span>
+              ),
+            },
+            {
+              label: "Última sincronização",
+              value: (
+                <span className="inline-flex items-center gap-1.5 text-[12px]">
+                  <Clock className="h-3 w-3 text-muted-foreground" />
+                  {matchesCtx.lastSync ? matchesCtx.lastSync.toLocaleString("pt-BR") : "—"}
+                  {matchesCtx.cached && (
+                    <Badge variant="secondary" className="text-[9px] ml-1">cache</Badge>
+                  )}
+                </span>
+              ),
+            },
+          ]}
+          footer={
+            matchesCtx.error ? (
+              <span className="text-amber-300/90">{matchesCtx.error}</span>
+            ) : undefined
           }
         />
       </div>

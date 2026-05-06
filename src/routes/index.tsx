@@ -11,6 +11,8 @@ import {
   notes,
 } from "@/data/mock";
 import { useTeams, useRoster } from "@/contexts/TeamsContext";
+import { useMatches } from "@/contexts/MatchesContext";
+import type { MatchEnriched } from "@/lib/matchTypes";
 import {
   Swords,
   Calendar,
@@ -35,13 +37,13 @@ export const Route = createFileRoute("/")({
 
 function AnalystDesk() {
   const { teams: liveTeams } = useTeams();
-  const upcoming = matches.filter((m) => m.status === "upcoming");
+  const { upcoming, live, completed, loading: matchesLoading, source: matchesSource } = useMatches();
   const analyzing = matches.filter((m) => m.preNotes || m.techNotes || m.keywords?.length);
-  const recent = matches.filter((m) => m.status === "finished").slice(0, 3);
+  const recent = completed.slice(0, 3);
   const trendingTeams = [...liveTeams].sort((a, b) => a.worldRank - b.worldRank).slice(0, 5);
   const topPlayers = [...players].sort((a, b) => b.rating - a.rating).slice(0, 4);
   const latestNotes = [...notes].sort((a, b) => (a.date < b.date ? 1 : -1)).slice(0, 3);
-  const nextMatch = upcoming[0];
+  const nextMatch = live[0] ?? upcoming[0];
 
   return (
     <div>
@@ -52,7 +54,13 @@ function AnalystDesk() {
           <span className="text-muted-foreground/50">·</span>
           <span>{new Date().toLocaleDateString("pt-BR", { weekday: "long", day: "2-digit", month: "long" })}</span>
           <span className="text-muted-foreground/50">·</span>
-          <span>{upcoming.length} mapeadas · {analyzing.length} em análise · {latestNotes.length} notas</span>
+          <span>
+            {matchesLoading
+              ? "Conectando GRID · carregando partidas…"
+              : `${upcoming.length} próximas · ${live.length} ao vivo · ${analyzing.length} em análise`}
+          </span>
+          <span className="text-muted-foreground/50">·</span>
+          <span className="text-[10px] uppercase tracking-[0.12em]">fonte: {matchesSource}</span>
         </div>
         <div className="flex gap-2">
           <Button variant="outline" asChild size="sm">
@@ -65,7 +73,7 @@ function AnalystDesk() {
       </div>
 
       {/* Featured next match */}
-      {nextMatch && <FeaturedMatch matchId={nextMatch.id} />}
+      {nextMatch && <FeaturedMatch match={nextMatch} />}
 
       {/* Two-column workspace */}
       <div className="mt-8 grid gap-6 lg:grid-cols-[1fr_320px]">
@@ -78,9 +86,24 @@ function AnalystDesk() {
             action={<Link to="/partidas" className="text-[12px] text-muted-foreground hover:text-foreground">Ver tudo →</Link>}
           >
             <div className="grid gap-3 md:grid-cols-2">
-              {upcoming.map((m) => <MatchRow key={m.id} matchId={m.id} />)}
+              {matchesLoading && upcoming.length === 0 && (
+                <div className="text-[12px] text-muted-foreground italic col-span-full">Conectando GRID…</div>
+              )}
+              {upcoming.slice(0, 6).map((m) => <MatchRow key={m.id} match={m} />)}
             </div>
           </Section>
+
+          {live.length > 0 && (
+            <Section
+              eyebrow="Ao vivo agora"
+              title="Live"
+              icon={<Flame className="h-4 w-4" />}
+            >
+              <div className="grid gap-3 md:grid-cols-2">
+                {live.map((m) => <MatchRow key={m.id} match={m} />)}
+              </div>
+            </Section>
+          )}
 
           <Section
             eyebrow="Workspace ativo"
@@ -88,7 +111,10 @@ function AnalystDesk() {
             icon={<Swords className="h-4 w-4" />}
           >
             <div className="grid gap-3 md:grid-cols-2">
-              {analyzing.map((m) => <MatchRow key={m.id} matchId={m.id} analyzing />)}
+              {analyzing.map((m) => {
+                const enriched = matchToEnrichedFallback(m);
+                return enriched ? <MatchRow key={m.id} match={enriched} analyzing /> : null;
+              })}
             </div>
           </Section>
 
@@ -98,7 +124,7 @@ function AnalystDesk() {
             icon={<TrendingUp className="h-4 w-4" />}
           >
             <div className="grid gap-3 md:grid-cols-2">
-              {recent.map((m) => <MatchRow key={m.id} matchId={m.id} />)}
+              {recent.map((m) => <MatchRow key={m.id} match={m} />)}
             </div>
           </Section>
         </div>
@@ -231,19 +257,44 @@ function SideCard({
   );
 }
 
-function FeaturedMatch({ matchId }: { matchId: string }) {
-  const m = matches.find((x) => x.id === matchId)!;
-  const a = getTeam(m.teamAId)!;
-  const b = getTeam(m.teamBId)!;
+function matchToEnrichedFallback(m: import("@/data/mock").Match): MatchEnriched | null {
+  const a = getTeam(m.teamAId);
+  const b = getTeam(m.teamBId);
+  if (!a || !b) return null;
+  return {
+    id: m.id,
+    slug: m.id,
+    tournament: m.event,
+    boType: m.format,
+    startTime: m.date,
+    status: m.status === "finished" ? "completed" : (m.status as "upcoming" | "live"),
+    teamA: a,
+    teamB: b,
+    result: m.result,
+    mapPool: [],
+    maps: m.maps,
+    source: "mock",
+    lastSyncAt: new Date().toISOString(),
+  };
+}
+
+function FeaturedMatch({ match: m }: { match: MatchEnriched }) {
+  const a = m.teamA;
+  const b = m.teamB;
   const rosterA = useRoster(a.id);
   const rosterB = useRoster(b.id);
+  // pre-notes/keywords still come from mock by id, when present
+  const mockExtra = matches.find((x) => x.id === m.slug);
   return (
     <Card className="overflow-hidden border-border/60">
       <div className="grid md:grid-cols-[1fr_auto] items-stretch">
         <div className="p-5 md:p-6">
           <div className="flex items-center gap-2 mb-3">
-            <span className="eyebrow">Próxima partida em destaque</span>
-            <Badge variant="default" className="text-[10px]">{m.event}</Badge>
+            <span className="eyebrow">{m.status === "live" ? "Ao vivo agora" : "Próxima partida em destaque"}</span>
+            <Badge variant="default" className="text-[10px]">{m.tournament}</Badge>
+            {m.source !== "mock" && (
+              <Badge variant="outline" className="text-[9px] uppercase tracking-[0.1em] border-emerald-500/30 text-emerald-300/90">GRID</Badge>
+            )}
           </div>
           <div className="flex items-center gap-5 mb-4">
             <div className="flex items-center gap-3">
@@ -268,14 +319,14 @@ function FeaturedMatch({ matchId }: { matchId: string }) {
               </div>
             </div>
           </div>
-          {m.preNotes && (
+          {mockExtra?.preNotes && (
             <p className="text-[13px] text-foreground/80 leading-relaxed max-w-2xl">
-              {m.preNotes}
+              {mockExtra.preNotes}
             </p>
           )}
-          {m.keywords && (
+          {mockExtra?.keywords && (
             <div className="flex flex-wrap gap-1.5 mt-3">
-              {m.keywords.map((k) => (
+              {mockExtra.keywords.map((k) => (
                 <Badge key={k} variant="secondary" className="text-[10px]">{k}</Badge>
               ))}
             </div>
@@ -291,12 +342,12 @@ function FeaturedMatch({ matchId }: { matchId: string }) {
           <div>
             <div className="text-[10.5px] uppercase tracking-[0.12em] text-muted-foreground font-semibold">Início</div>
             <div className="text-[14px] font-semibold mt-0.5">
-              {new Date(m.date).toLocaleString("pt-BR", { weekday: "short", day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit" })}
+              {new Date(m.startTime).toLocaleString("pt-BR", { weekday: "short", day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit" })}
             </div>
-            <div className="text-[12px] text-muted-foreground mt-1">{m.format} · {m.maps.length} mapas previstos</div>
+            <div className="text-[12px] text-muted-foreground mt-1">{m.boType} · {m.maps.length || m.mapPool.length} mapas</div>
           </div>
-          <Button asChild size="sm" className="w-full">
-            <Link to="/partidas/$matchId" params={{ matchId: m.id }}>
+          <Button asChild size="sm" className="w-full" disabled={m.source === "grid"}>
+            <Link to="/partidas/$matchId" params={{ matchId: m.slug }}>
               Abrir workspace <ArrowRight className="ml-1.5 h-3.5 w-3.5" />
             </Link>
           </Button>
@@ -306,29 +357,32 @@ function FeaturedMatch({ matchId }: { matchId: string }) {
   );
 }
 
-function MatchRow({ matchId, analyzing }: { matchId: string; analyzing?: boolean }) {
-  const m = matches.find((x) => x.id === matchId)!;
-  const a = getTeam(m.teamAId)!;
-  const b = getTeam(m.teamBId)!;
+function MatchRow({ match: m, analyzing }: { match: MatchEnriched; analyzing?: boolean }) {
+  const a = m.teamA;
+  const b = m.teamB;
   const accent = a.colorPrimary ?? b.colorPrimary;
+  const isMock = m.source === "mock";
+  const Wrapper: any = isMock ? Link : "div";
+  const wrapperProps = isMock
+    ? { to: "/partidas/$matchId", params: { matchId: m.slug } }
+    : {};
   return (
-    <Link
-      to="/partidas/$matchId"
-      params={{ matchId: m.id }}
+    <Wrapper
+      {...wrapperProps}
       className={`group block rounded-lg border bg-card p-3.5 transition-colors hover:border-primary/40 border-l-2 ${
         analyzing ? "border-primary/30" : "border-border/60"
-      }`}
+      } ${isMock ? "cursor-pointer" : ""}`}
       style={accent ? { borderLeftColor: `${accent}55` } : undefined}
     >
       <div className="flex items-center justify-between mb-2.5 gap-2">
-        <span className="text-[10.5px] uppercase tracking-[0.12em] text-muted-foreground font-semibold truncate flex-1">{m.event}</span>
-        {(a.gridId || b.gridId) && (
+        <span className="text-[10.5px] uppercase tracking-[0.12em] text-muted-foreground font-semibold truncate flex-1">{m.tournament}</span>
+        {(m.source !== "mock" || a.gridId || b.gridId) && (
           <span
-            title="Times com dados reais GRID"
+            title={m.source !== "mock" ? "Partida real GRID" : "Times com dados reais GRID"}
             className="text-[9px] uppercase tracking-[0.1em] font-semibold px-1.5 py-[1.5px] rounded bg-emerald-500/10 text-emerald-300/90 border border-emerald-500/25 inline-flex items-center gap-1"
           >
             <span className="h-1 w-1 rounded-full bg-emerald-400" />
-            Dados reais
+            {m.source !== "mock" ? "GRID" : "Dados reais"}
           </span>
         )}
         <Badge
@@ -352,12 +406,14 @@ function MatchRow({ matchId, analyzing }: { matchId: string; analyzing?: boolean
         </div>
       </div>
       <div className="text-[12px] text-muted-foreground mt-2.5 flex items-center justify-between">
-        <span>{new Date(m.date).toLocaleString("pt-BR", { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit" })}</span>
-        <span className="opacity-0 group-hover:opacity-100 transition-opacity text-primary font-semibold inline-flex items-center">
-          Abrir <ArrowRight className="h-3 w-3 ml-1" />
-        </span>
+        <span>{new Date(m.startTime).toLocaleString("pt-BR", { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit" })} · {m.boType}</span>
+        {isMock && (
+          <span className="opacity-0 group-hover:opacity-100 transition-opacity text-primary font-semibold inline-flex items-center">
+            Abrir <ArrowRight className="h-3 w-3 ml-1" />
+          </span>
+        )}
       </div>
-    </Link>
+    </Wrapper>
   );
 }
 
