@@ -6,7 +6,8 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { PageHeader } from "@/components/PageHeader";
 import { TeamBadge } from "@/components/TeamBadge";
-import { teams, getTeam, getTeamPlayers, getTeamMapStats, maps, matches } from "@/data/mock";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { teams, getTeam, getTeamPlayers, getTeamMapStats, getTeamMapHistory, maps, matches } from "@/data/mock";
 import { Mic, TrendingUp, TrendingDown } from "lucide-react";
 
 export const Route = createFileRoute("/comparar")({
