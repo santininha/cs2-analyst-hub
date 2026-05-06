@@ -209,17 +209,55 @@ function Compare() {
 }
 
 function TeamPicker({ label, value, onChange, exclude }: { label: string; value: string; onChange: (v: string) => void; exclude: string }) {
+  const [open, setOpen] = useState(false);
+  const selected = getTeam(value);
+  const list = teams.filter((t) => t.id !== exclude);
   return (
     <div>
-      <label className="text-xs font-semibold text-muted-foreground mb-1 block">{label}</label>
-      <Select value={value} onValueChange={onChange}>
-        <SelectTrigger className="h-12"><SelectValue /></SelectTrigger>
-        <SelectContent>
-          {teams.filter((t) => t.id !== exclude).map((t) => (
-            <SelectItem key={t.id} value={t.id}>{t.name} ({t.tag}) — #{t.worldRank}</SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
+      <label className="text-[11px] uppercase tracking-wider font-semibold text-muted-foreground mb-1.5 block">{label}</label>
+      <Popover open={open} onOpenChange={setOpen}>
+        <PopoverTrigger asChild>
+          <Button
+            variant="outline"
+            role="combobox"
+            className="h-11 w-full justify-between font-medium text-[13px] bg-card"
+          >
+            {selected ? (
+              <span className="flex items-center gap-2 min-w-0">
+                <TeamBadge team={selected} size="sm" />
+                <span className="truncate">{selected.name}</span>
+                <span className="text-muted-foreground text-xs">#{selected.worldRank}</span>
+              </span>
+            ) : (
+              <span className="text-muted-foreground">Buscar time…</span>
+            )}
+            <ChevronsUpDown className="h-4 w-4 opacity-50 shrink-0" />
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent className="p-0 w-[var(--radix-popover-trigger-width)]" align="start">
+          <Command>
+            <CommandInput placeholder="Digite o nome do time…" className="h-10 text-[13px]" />
+            <CommandList>
+              <CommandEmpty>Nenhum time encontrado.</CommandEmpty>
+              <CommandGroup>
+                {list.map((t) => (
+                  <CommandItem
+                    key={t.id}
+                    value={`${t.name} ${t.tag}`}
+                    onSelect={() => { onChange(t.id); setOpen(false); }}
+                    className="text-[13px] gap-2"
+                  >
+                    <TeamBadge team={t} size="sm" />
+                    <span className="flex-1 truncate">{t.name}</span>
+                    <span className="text-xs text-muted-foreground">#{t.worldRank}</span>
+                    <Check className={`h-4 w-4 ${value === t.id ? "opacity-100" : "opacity-0"}`} />
+                  </CommandItem>
+                ))}
+              </CommandGroup>
+            </CommandList>
+          </Command>
+        </PopoverContent>
+      </Popover>
     </div>
   );
 }
