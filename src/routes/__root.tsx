@@ -4,6 +4,7 @@ import { SidebarProvider, SidebarTrigger, SidebarInset } from "@/components/ui/s
 import { WorkspaceSidebar } from "@/components/WorkspaceSidebar";
 import { LiveDataBadge } from "@/components/LiveDataBadge";
 import { TeamsProvider } from "@/contexts/TeamsContext";
+import { MatchesProvider } from "@/contexts/MatchesContext";
 
 import appCss from "../styles.css?url";
 
@@ -58,6 +59,7 @@ function RootShell({ children }: { children: React.ReactNode }) {
 function RootComponent() {
   return (
     <TeamsProvider>
+    <MatchesProvider>
     <SidebarProvider
       style={
         {
@@ -91,6 +93,7 @@ function RootComponent() {
       </div>
       <Toaster />
     </SidebarProvider>
+    </MatchesProvider>
     </TeamsProvider>
   );
 }
