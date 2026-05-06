@@ -54,10 +54,14 @@ function DataSources() {
   );
 }
 
+const GRID_ENDPOINT = "https://api-op.grid.gg/central-data/graphql";
+
 function GridStatusCard() {
-  const { loading, error, gridCount, matchedCount, rosterCount, lastSync, source, cached } = useTeams();
+  const { loading, error, gridCount, matchedCount, rosterCount, lastSync, source, cached, teams } = useTeams();
   const connected = !error && gridCount > 0;
   const usingFallback = source === "mock" || matchedCount === 0;
+  const enrichedTeams = teams.filter((t) => t.gridId);
+  const fallbackTeams = teams.filter((t) => !t.gridId);
 
   const statusColor = loading
     ? "border-border/60 bg-card/40"
