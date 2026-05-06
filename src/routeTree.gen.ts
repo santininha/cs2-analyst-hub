@@ -9,38 +9,194 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as NotasRouteImport } from './routes/notas'
+import { Route as MapasRouteImport } from './routes/mapas'
+import { Route as GlossarioRouteImport } from './routes/glossario'
+import { Route as FontesRouteImport } from './routes/fontes'
+import { Route as CompararRouteImport } from './routes/comparar'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as PartidasIndexRouteImport } from './routes/partidas.index'
+import { Route as JogadoresIndexRouteImport } from './routes/jogadores.index'
+import { Route as PartidasMatchIdRouteImport } from './routes/partidas.$matchId'
+import { Route as JogadoresPlayerIdRouteImport } from './routes/jogadores.$playerId'
 
+const NotasRoute = NotasRouteImport.update({
+  id: '/notas',
+  path: '/notas',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MapasRoute = MapasRouteImport.update({
+  id: '/mapas',
+  path: '/mapas',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GlossarioRoute = GlossarioRouteImport.update({
+  id: '/glossario',
+  path: '/glossario',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FontesRoute = FontesRouteImport.update({
+  id: '/fontes',
+  path: '/fontes',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CompararRoute = CompararRouteImport.update({
+  id: '/comparar',
+  path: '/comparar',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PartidasIndexRoute = PartidasIndexRouteImport.update({
+  id: '/partidas/',
+  path: '/partidas/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const JogadoresIndexRoute = JogadoresIndexRouteImport.update({
+  id: '/jogadores/',
+  path: '/jogadores/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PartidasMatchIdRoute = PartidasMatchIdRouteImport.update({
+  id: '/partidas/$matchId',
+  path: '/partidas/$matchId',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const JogadoresPlayerIdRoute = JogadoresPlayerIdRouteImport.update({
+  id: '/jogadores/$playerId',
+  path: '/jogadores/$playerId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/comparar': typeof CompararRoute
+  '/fontes': typeof FontesRoute
+  '/glossario': typeof GlossarioRoute
+  '/mapas': typeof MapasRoute
+  '/notas': typeof NotasRoute
+  '/jogadores/$playerId': typeof JogadoresPlayerIdRoute
+  '/partidas/$matchId': typeof PartidasMatchIdRoute
+  '/jogadores/': typeof JogadoresIndexRoute
+  '/partidas/': typeof PartidasIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/comparar': typeof CompararRoute
+  '/fontes': typeof FontesRoute
+  '/glossario': typeof GlossarioRoute
+  '/mapas': typeof MapasRoute
+  '/notas': typeof NotasRoute
+  '/jogadores/$playerId': typeof JogadoresPlayerIdRoute
+  '/partidas/$matchId': typeof PartidasMatchIdRoute
+  '/jogadores': typeof JogadoresIndexRoute
+  '/partidas': typeof PartidasIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/comparar': typeof CompararRoute
+  '/fontes': typeof FontesRoute
+  '/glossario': typeof GlossarioRoute
+  '/mapas': typeof MapasRoute
+  '/notas': typeof NotasRoute
+  '/jogadores/$playerId': typeof JogadoresPlayerIdRoute
+  '/partidas/$matchId': typeof PartidasMatchIdRoute
+  '/jogadores/': typeof JogadoresIndexRoute
+  '/partidas/': typeof PartidasIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/comparar'
+    | '/fontes'
+    | '/glossario'
+    | '/mapas'
+    | '/notas'
+    | '/jogadores/$playerId'
+    | '/partidas/$matchId'
+    | '/jogadores/'
+    | '/partidas/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/comparar'
+    | '/fontes'
+    | '/glossario'
+    | '/mapas'
+    | '/notas'
+    | '/jogadores/$playerId'
+    | '/partidas/$matchId'
+    | '/jogadores'
+    | '/partidas'
+  id:
+    | '__root__'
+    | '/'
+    | '/comparar'
+    | '/fontes'
+    | '/glossario'
+    | '/mapas'
+    | '/notas'
+    | '/jogadores/$playerId'
+    | '/partidas/$matchId'
+    | '/jogadores/'
+    | '/partidas/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  CompararRoute: typeof CompararRoute
+  FontesRoute: typeof FontesRoute
+  GlossarioRoute: typeof GlossarioRoute
+  MapasRoute: typeof MapasRoute
+  NotasRoute: typeof NotasRoute
+  JogadoresPlayerIdRoute: typeof JogadoresPlayerIdRoute
+  PartidasMatchIdRoute: typeof PartidasMatchIdRoute
+  JogadoresIndexRoute: typeof JogadoresIndexRoute
+  PartidasIndexRoute: typeof PartidasIndexRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/notas': {
+      id: '/notas'
+      path: '/notas'
+      fullPath: '/notas'
+      preLoaderRoute: typeof NotasRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/mapas': {
+      id: '/mapas'
+      path: '/mapas'
+      fullPath: '/mapas'
+      preLoaderRoute: typeof MapasRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/glossario': {
+      id: '/glossario'
+      path: '/glossario'
+      fullPath: '/glossario'
+      preLoaderRoute: typeof GlossarioRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/fontes': {
+      id: '/fontes'
+      path: '/fontes'
+      fullPath: '/fontes'
+      preLoaderRoute: typeof FontesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/comparar': {
+      id: '/comparar'
+      path: '/comparar'
+      fullPath: '/comparar'
+      preLoaderRoute: typeof CompararRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -48,11 +204,48 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/partidas/': {
+      id: '/partidas/'
+      path: '/partidas'
+      fullPath: '/partidas/'
+      preLoaderRoute: typeof PartidasIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/jogadores/': {
+      id: '/jogadores/'
+      path: '/jogadores'
+      fullPath: '/jogadores/'
+      preLoaderRoute: typeof JogadoresIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/partidas/$matchId': {
+      id: '/partidas/$matchId'
+      path: '/partidas/$matchId'
+      fullPath: '/partidas/$matchId'
+      preLoaderRoute: typeof PartidasMatchIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/jogadores/$playerId': {
+      id: '/jogadores/$playerId'
+      path: '/jogadores/$playerId'
+      fullPath: '/jogadores/$playerId'
+      preLoaderRoute: typeof JogadoresPlayerIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  CompararRoute: CompararRoute,
+  FontesRoute: FontesRoute,
+  GlossarioRoute: GlossarioRoute,
+  MapasRoute: MapasRoute,
+  NotasRoute: NotasRoute,
+  JogadoresPlayerIdRoute: JogadoresPlayerIdRoute,
+  PartidasMatchIdRoute: PartidasMatchIdRoute,
+  JogadoresIndexRoute: JogadoresIndexRoute,
+  PartidasIndexRoute: PartidasIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

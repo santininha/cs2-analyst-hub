@@ -27,7 +27,7 @@ export const Route = createFileRoute("/jogadores/$playerId")({
 });
 
 function PlayerPage() {
-  const p = Route.useLoaderData();
+  const p = Route.useLoaderData() as import("@/data/mock").Player;
   const team = getTeam(p.teamId)!;
   const [note, setNote] = useState(p.notes ?? "");
   const linked = allNotes.filter((n) => n.linkedPlayerId === p.id);

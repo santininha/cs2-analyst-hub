@@ -28,7 +28,7 @@ export const Route = createFileRoute("/partidas/$matchId")({
 });
 
 function MatchPage() {
-  const m = Route.useLoaderData();
+  const m = Route.useLoaderData() as import("@/data/mock").Match;
   const a = getTeam(m.teamAId)!;
   const b = getTeam(m.teamBId)!;
   const [pre, setPre] = useState(m.preNotes ?? "");
