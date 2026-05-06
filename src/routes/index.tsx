@@ -10,6 +10,7 @@ import {
   players,
   notes,
 } from "@/data/mock";
+import { useTeams, useRoster } from "@/contexts/TeamsContext";
 import {
   Swords,
   Calendar,
@@ -19,6 +20,7 @@ import {
   StickyNote,
   Flame,
   Mic,
+  Users,
 } from "lucide-react";
 
 export const Route = createFileRoute("/")({
