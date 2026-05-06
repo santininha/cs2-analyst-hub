@@ -86,14 +86,14 @@ function MatchPage() {
       </Card>
 
       {/* Resumo rápido para caster */}
-      <Card className="mb-6 bg-primary text-primary-foreground border-primary">
-        <CardHeader className="pb-3">
-          <CardTitle className="flex items-center gap-2 text-primary-foreground">
-            <Mic className="h-5 w-5" /> Resumo rápido para caster
+      <Card className="mb-5 border-primary/30 bg-primary-soft">
+        <CardHeader className="pb-2">
+          <CardTitle className="flex items-center gap-2 text-primary">
+            <Mic className="h-4 w-4" /> Resumo rápido para caster
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid gap-3 sm:grid-cols-2">
+          <div className="grid gap-2.5 sm:grid-cols-2">
             <SummaryItem label="Time favorito" value={`${summary.favorite.name} (${summary.favorite.winRate}% WR)`} />
             <SummaryItem label="Jogador destaque" value={summary.allStar ? `${summary.allStar.nick} — ${summary.allStar.rating.toFixed(2)}` : "—"} />
             <SummaryItem label={`Mapa forte de ${a.tag}`} value={summary.aBestMap ? `${summary.aBestMap} (${summary.aBest!.winRate}%)` : "—"} />
@@ -101,6 +101,24 @@ function MatchPage() {
             <SummaryItem label={`Ponto fraco de ${a.tag}`} value={summary.aWorstMap ? `${summary.aWorstMap} (${summary.aWorst!.winRate}%)` : "—"} />
             <SummaryItem label={`Ponto fraco de ${b.tag}`} value={summary.bWorstMap ? `${summary.bWorstMap} (${summary.bWorst!.winRate}%)` : "—"} />
           </div>
+        </CardContent>
+      </Card>
+
+      {/* Caster Quick Notes — sempre visível no topo */}
+      <Card className="mb-6 border-dashed">
+        <CardHeader className="pb-2">
+          <CardTitle className="text-[13px] uppercase tracking-wider text-muted-foreground flex items-center gap-2">
+            <Tag className="h-3.5 w-3.5" /> Caster Quick Notes
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <Textarea
+            value={tech}
+            onChange={(e) => setTech(e.target.value)}
+            rows={2}
+            placeholder="Anote insights rápidos para usar ao vivo (ex: jogada de retake favorita, narrativa do confronto…)"
+            className="resize-none text-[13px] bg-background"
+          />
         </CardContent>
       </Card>
 
