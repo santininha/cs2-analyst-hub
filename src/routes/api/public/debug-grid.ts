@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { introspectGrid } from "@/server/grid-introspect.functions";
 
-export const Route = createFileRoute("/api/debug/grid")({
+export const Route = createFileRoute("/api/public/debug-grid")({
   server: {
     handlers: {
       GET: async () => {
