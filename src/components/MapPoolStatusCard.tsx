@@ -21,6 +21,12 @@ export function MapPoolStatusCard({ className = "" }: { className?: string }) {
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 flex-wrap">
               <span className="text-[13px] font-semibold">Map pool ativo</span>
+              <Badge
+                variant="outline"
+                className="text-[9px] uppercase tracking-[0.1em] border-emerald-500/30 text-emerald-200/90"
+              >
+                {status.season}
+              </Badge>
               <span className="inline-flex items-center gap-1 text-[10.5px] uppercase tracking-[0.1em] font-semibold text-emerald-300">
                 <CheckCircle2 className="h-3 w-3" /> ok
               </span>
