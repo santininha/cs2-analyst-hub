@@ -60,11 +60,12 @@ function RootComponent() {
       <div className="min-h-screen flex w-full bg-background">
         <AppSidebar />
         <div className="flex-1 flex flex-col min-w-0">
-          <header className="h-14 flex items-center gap-3 border-b bg-card px-4 sticky top-0 z-10">
+          <header className="h-14 flex items-center gap-3 border-b border-border/60 bg-card/80 backdrop-blur px-4 sticky top-0 z-10">
             <SidebarTrigger />
             <div className="flex-1" />
-            <span className="text-xs text-muted-foreground hidden sm:inline">
-              Modo: <span className="text-primary font-semibold">Caster ao vivo</span>
+            <LiveDataBadge />
+            <span className="text-[11px] text-muted-foreground hidden md:inline">
+              Modo <span className="text-foreground font-semibold">Caster ao vivo</span>
             </span>
           </header>
           <main className="flex-1 p-4 md:p-6 overflow-auto">
