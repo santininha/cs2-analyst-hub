@@ -115,7 +115,10 @@ function AnalystDesk() {
                   <span className="text-[11px] font-semibold text-muted-foreground tabular-nums w-5">#{t.worldRank}</span>
                   <TeamBadge team={t} size="sm" />
                   <div className="flex-1 min-w-0">
-                    <div className="text-[13px] font-semibold truncate">{t.name}</div>
+                    <div className="text-[13px] font-semibold truncate flex items-center gap-1.5">
+                      <span className="truncate">{t.name}</span>
+                      <DataSourceTag team={t} size="xs" />
+                    </div>
                     <div className="text-[12px] text-muted-foreground">{t.region} · {t.winRate}% WR</div>
                   </div>
                 </li>
