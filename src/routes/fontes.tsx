@@ -1,167 +1,374 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { PageHeader } from "@/components/PageHeader";
-import { dataSources } from "@/data/mock";
-import { useTeams } from "@/contexts/TeamsContext";
-import { Database, FileSpreadsheet, FileJson, Link as LinkIcon, Construction, CheckCircle2, AlertTriangle, Loader2 } from "lucide-react";
+import { useIntegrationStatus } from "@/lib/integrationStatus";
+import {
+  CheckCircle2,
+  AlertTriangle,
+  XCircle,
+  Loader2,
+  Database,
+  Users,
+  Image as ImageIcon,
+  Palette,
+  Shield,
+  Radio,
+  Swords,
+  UserSquare2,
+  BarChart3,
+  Clock,
+} from "lucide-react";
+import type { LucideIcon } from "lucide-react";
+
+const GRID_ENDPOINT = "https://api-op.grid.gg/central-data/graphql";
 
 export const Route = createFileRoute("/fontes")({
-  head: () => ({ meta: [{ title: "Fontes de Dados — CS2 Analyst Hub" }] }),
-  component: DataSources,
+  head: () => ({
+    meta: [
+      { title: "Fontes de Dados — CS2 Analyst Hub" },
+      {
+        name: "description",
+        content:
+          "Diagnóstico das integrações do CS2 Analyst Hub: status GRID, times, logos, branding e lineups.",
+      },
+    ],
+  }),
+  component: DataSourcesPage,
 });
 
-const icons: Record<string, any> = { API: Database, CSV: FileSpreadsheet, JSON: FileJson, URL: LinkIcon };
+type Tone = "ok" | "warn" | "err" | "idle" | "info";
 
-function DataSources() {
+function toneClasses(tone: Tone) {
+  switch (tone) {
+    case "ok":
+      return {
+        border: "border-emerald-500/30",
+        bg: "bg-emerald-500/5",
+        text: "text-emerald-300",
+        dot: "bg-emerald-400",
+      };
+    case "warn":
+      return {
+        border: "border-amber-500/30",
+        bg: "bg-amber-500/5",
+        text: "text-amber-300",
+        dot: "bg-amber-400",
+      };
+    case "err":
+      return {
+        border: "border-red-500/30",
+        bg: "bg-red-500/5",
+        text: "text-red-300",
+        dot: "bg-red-400",
+      };
+    case "info":
+      return {
+        border: "border-primary/30",
+        bg: "bg-primary/5",
+        text: "text-primary",
+        dot: "bg-primary",
+      };
+    default:
+      return {
+        border: "border-border/60",
+        bg: "bg-card/40",
+        text: "text-muted-foreground",
+        dot: "bg-muted-foreground/60",
+      };
+  }
+}
+
+function DataSourcesPage() {
+  const s = useIntegrationStatus();
+
+  const gridTone: Tone =
+    s.gridState === "connected"
+      ? "ok"
+      : s.gridState === "fallback"
+        ? "warn"
+        : s.gridState === "error"
+          ? "err"
+          : "idle";
+
+  const gridLabel =
+    s.gridState === "connected"
+      ? "Dados sincronizados · GRID"
+      : s.gridState === "fallback"
+        ? "GRID indisponível — usando fallback mock"
+        : s.gridState === "error"
+          ? "Erro ao conectar GRID"
+          : "Sincronizando…";
+
   return (
-    <div className="max-w-4xl mx-auto">
-      <PageHeader title="Fontes de Dados" subtitle="Em breve: importe dados reais via API, CSV, JSON ou link de partida." />
-
-      <GridStatusCard />
-
-      <Card className="mb-6 bg-accent border-primary/30">
-        <CardContent className="p-4 flex items-start gap-3">
-          <Construction className="h-5 w-5 text-primary mt-0.5" />
-          <div className="text-sm">
-            <strong>Funcionalidade em desenvolvimento.</strong> A arquitetura do app já está pronta para receber dados externos. As integrações serão liberadas progressivamente.
-          </div>
-        </CardContent>
-      </Card>
+    <div className="max-w-5xl mx-auto">
+      <PageHeader
+        title="Fontes de Dados"
+        subtitle="Diagnóstico em tempo real das integrações que alimentam o workspace."
+      />
 
       <div className="grid gap-3 md:grid-cols-2">
-        {dataSources.map((d) => {
-          const Icon = icons[d.type] ?? Database;
-          return (
-            <Card key={d.id}>
-              <CardContent className="p-5">
-                <div className="flex items-start justify-between mb-3">
-                  <div className="h-10 w-10 rounded-md bg-primary/10 flex items-center justify-center">
-                    <Icon className="h-5 w-5 text-primary" />
-                  </div>
-                  <Badge variant="outline">{d.status}</Badge>
-                </div>
-                <h3 className="font-bold mb-1">{d.name}</h3>
-                <p className="text-sm text-muted-foreground mb-4">{d.description}</p>
-                <Button disabled className="w-full">Conectar (em breve)</Button>
-              </CardContent>
-            </Card>
-          );
-        })}
+        {/* GRID API */}
+        <StatusCard
+          icon={Radio}
+          tone={gridTone}
+          title="GRID API"
+          subtitle={gridLabel}
+          loading={s.loading}
+          rows={[
+            {
+              label: "Endpoint",
+              value: (
+                <span className="font-mono text-[11px] break-all text-muted-foreground/90">
+                  {GRID_ENDPOINT}
+                </span>
+              ),
+            },
+            {
+              label: "Autenticação",
+              value: (
+                <span className="inline-flex items-center gap-1.5 text-[12px] text-muted-foreground">
+                  <Shield className="h-3 w-3" /> x-api-key (oculta no servidor)
+                </span>
+              ),
+            },
+            {
+              label: "Última sincronização",
+              value: (
+                <span className="inline-flex items-center gap-1.5 text-[12px]">
+                  <Clock className="h-3 w-3 text-muted-foreground" />
+                  {s.lastSyncAt ? s.lastSyncAt.toLocaleString("pt-BR") : "—"}
+                  {s.cached && (
+                    <Badge variant="secondary" className="text-[9px] ml-1">
+                      cache
+                    </Badge>
+                  )}
+                </span>
+              ),
+            },
+          ]}
+          footer={s.error ? <span className="text-amber-300/90">{s.error}</span> : undefined}
+        />
+
+        {/* Times */}
+        <StatusCard
+          icon={Database}
+          tone={s.enrichedCount > 0 ? "ok" : s.teamsCount > 0 ? "warn" : "idle"}
+          title="Times"
+          subtitle={
+            s.enrichedCount > 0
+              ? `${s.enrichedCount} de ${s.teamsCount} times com dados reais GRID`
+              : `${s.teamsCount} times carregados (mock)`
+          }
+          loading={s.loading}
+          rows={[
+            { label: "Carregados", value: <Num>{s.teamsCount}</Num> },
+            {
+              label: "Reais (GRID)",
+              value: (
+                <span className="inline-flex items-center gap-1.5">
+                  <Num>{s.enrichedCount}</Num>
+                  {s.enrichedCount > 0 && (
+                    <Badge
+                      variant="outline"
+                      className="text-[9px] border-emerald-500/30 text-emerald-300/90"
+                    >
+                      reais
+                    </Badge>
+                  )}
+                </span>
+              ),
+            },
+            {
+              label: "Mock fallback",
+              value: <Num>{Math.max(0, s.teamsCount - s.enrichedCount)}</Num>,
+            },
+          ]}
+        />
+
+        {/* Logos & Branding */}
+        <StatusCard
+          icon={ImageIcon}
+          tone={s.hasRealLogos ? "ok" : "idle"}
+          title="Logos reais"
+          subtitle={
+            s.hasRealLogos
+              ? `${s.realLogosCount} logos carregados via GRID`
+              : "Nenhum logo real carregado"
+          }
+          loading={s.loading}
+          rows={[
+            { label: "Logos GRID", value: <Num>{s.realLogosCount}</Num> },
+            {
+              label: "Cobertura",
+              value: (
+                <span className="text-[12px] tabular-nums">
+                  {s.teamsCount > 0
+                    ? `${Math.round((s.realLogosCount / s.teamsCount) * 100)}%`
+                    : "—"}
+                </span>
+              ),
+            },
+          ]}
+        />
+
+        <StatusCard
+          icon={Palette}
+          tone={s.hasBranding ? "ok" : "idle"}
+          title="Branding"
+          subtitle={
+            s.hasBranding
+              ? `${s.brandingCount} times com cores oficiais`
+              : "Sem cores oficiais carregadas"
+          }
+          loading={s.loading}
+          rows={[
+            { label: "Cores oficiais", value: <Num>{s.brandingCount}</Num> },
+            {
+              label: "Aplicação",
+              value: (
+                <span className="text-[12px] text-muted-foreground">
+                  bordas, tags e detalhes
+                </span>
+              ),
+            },
+          ]}
+        />
+
+        {/* Lineups */}
+        <StatusCard
+          icon={Users}
+          tone={s.hasLineups ? "ok" : "idle"}
+          title="Lineups"
+          subtitle={
+            s.hasLineups
+              ? `${s.lineupsCount} lineups · ${s.playersCount} jogadores`
+              : "Aguardando próxima etapa de integração"
+          }
+          loading={s.loading}
+          rows={[
+            { label: "Lineups carregadas", value: <Num>{s.lineupsCount}</Num> },
+            { label: "Jogadores", value: <Num>{s.playersCount}</Num> },
+          ]}
+        />
+
+        {/* Fallback */}
+        <StatusCard
+          icon={Shield}
+          tone={s.isUsingFallback ? "warn" : "ok"}
+          title="Fallback mock"
+          subtitle={s.isUsingFallback ? "Ativo" : "Inativo"}
+          loading={s.loading}
+          rows={[
+            {
+              label: "Estado",
+              value: (
+                <Badge
+                  variant="outline"
+                  className={`text-[10px] ${
+                    s.isUsingFallback
+                      ? "border-amber-500/40 text-amber-300"
+                      : "border-emerald-500/30 text-emerald-300/90"
+                  }`}
+                >
+                  {s.isUsingFallback ? "ativo" : "inativo"}
+                </Badge>
+              ),
+            },
+          ]}
+          footer={
+            <span className="text-muted-foreground">
+              O fallback mantém o app navegável caso a GRID não responda.
+            </span>
+          }
+        />
       </div>
+
+      {/* Roadmap */}
+      <section className="mt-8">
+        <div className="mb-3">
+          <span className="text-[11px] uppercase tracking-[0.13em] text-muted-foreground font-semibold">
+            Roadmap
+          </span>
+          <h2 className="text-[18px] mt-0.5">Próximas integrações</h2>
+        </div>
+        <div className="grid gap-3 md:grid-cols-3">
+          <RoadmapCard icon={Swords} title="Matches reais" description="Calendário e resultados oficiais via GRID." />
+          <RoadmapCard
+            icon={UserSquare2}
+            title="Players reais"
+            description="Perfis completos: papel, país, agência e histórico."
+          />
+          <RoadmapCard icon={BarChart3} title="Stats por mapa" description="Win rate, lados e desempenho mapa a mapa." />
+        </div>
+      </section>
     </div>
   );
 }
 
-const GRID_ENDPOINT = "https://api-op.grid.gg/central-data/graphql";
+function Num({ children }: { children: number }) {
+  return <span className="font-semibold tabular-nums text-foreground/90">{children}</span>;
+}
 
-function GridStatusCard() {
-  const { loading, error, gridCount, matchedCount, rosterCount, lastSync, source, cached, teams } = useTeams();
-  const connected = !error && gridCount > 0;
-  const usingFallback = source === "mock" || matchedCount === 0;
-  const enrichedTeams = teams.filter((t) => t.gridId);
-  const fallbackTeams = teams.filter((t) => !t.gridId);
-
-  const statusColor = loading
-    ? "border-border/60 bg-card/40"
-    : connected
-      ? "border-emerald-500/30 bg-emerald-500/5"
-      : "border-amber-500/40 bg-amber-500/5";
-
-  const StatusIcon = loading ? Loader2 : connected ? CheckCircle2 : AlertTriangle;
-  const statusLabel = loading
-    ? "Sincronizando…"
-    : connected
-      ? "GRID conectado"
-      : "GRID indisponível — usando mock";
+function StatusCard({
+  icon: Icon,
+  tone,
+  title,
+  subtitle,
+  rows,
+  footer,
+  loading,
+}: {
+  icon: LucideIcon;
+  tone: Tone;
+  title: string;
+  subtitle: string;
+  rows: { label: string; value: React.ReactNode }[];
+  footer?: React.ReactNode;
+  loading?: boolean;
+}) {
+  const t = toneClasses(tone);
+  const StatusIcon = loading
+    ? Loader2
+    : tone === "ok"
+      ? CheckCircle2
+      : tone === "warn"
+        ? AlertTriangle
+        : tone === "err"
+          ? XCircle
+          : CheckCircle2;
 
   return (
-    <Card className={`mb-6 backdrop-blur-md ${statusColor}`}>
+    <Card className={`backdrop-blur-md ${t.border} ${t.bg}`}>
       <CardContent className="p-4">
         <div className="flex items-start gap-3">
-          <StatusIcon
-            className={`h-5 w-5 mt-0.5 ${
-              loading ? "animate-spin text-muted-foreground" : connected ? "text-emerald-400" : "text-amber-400"
-            }`}
-          />
+          <div
+            className={`h-9 w-9 rounded-md flex items-center justify-center shrink-0 ${t.bg} border ${t.border}`}
+          >
+            <Icon className={`h-4 w-4 ${t.text}`} />
+          </div>
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 flex-wrap">
-              <span className="text-[13px] font-semibold">{statusLabel}</span>
-              <Badge variant="outline" className="text-[10px]">GRID Central Data</Badge>
-              {cached && <Badge variant="secondary" className="text-[10px]">cache</Badge>}
-              {usingFallback && !loading && (
-                <Badge variant="outline" className="text-[10px] border-amber-500/40 text-amber-300">
-                  fallback mock ativo
-                </Badge>
-              )}
+              <span className="text-[13px] font-semibold">{title}</span>
+              <span className={`inline-flex items-center gap-1 text-[10.5px] uppercase tracking-[0.1em] font-semibold ${t.text}`}>
+                <StatusIcon
+                  className={`h-3 w-3 ${loading ? "animate-spin" : ""}`}
+                />
+                {loading ? "sincronizando" : tone === "ok" ? "ok" : tone === "warn" ? "atenção" : tone === "err" ? "erro" : "—"}
+              </span>
             </div>
-            <div className="mt-2 grid gap-x-6 gap-y-1 text-[12px] text-muted-foreground sm:grid-cols-2 lg:grid-cols-4">
-              <div>
-                <span className="text-foreground/80 font-semibold tabular-nums">{gridCount}</span> times carregados
-              </div>
-              <div>
-                <span className="text-foreground/80 font-semibold tabular-nums">{matchedCount}</span> enriquecidos
-              </div>
-              <div>
-                <span className="text-foreground/80 font-semibold tabular-nums">{rosterCount}</span> jogadores
-              </div>
-              <div>
-                Última sync:{" "}
-                <span className="text-foreground/80 font-semibold">
-                  {lastSync ? lastSync.toLocaleTimeString("pt-BR") : "—"}
-                </span>
-              </div>
-            </div>
+            <p className="text-[12px] text-muted-foreground mt-0.5">{subtitle}</p>
 
-            <div className="mt-3 rounded-md border border-border/50 bg-background/40 px-3 py-2 text-[11px] font-mono text-muted-foreground/90 break-all">
-              <span className="text-muted-foreground/60">endpoint · </span>
-              {GRID_ENDPOINT}
-              <span className="ml-2 text-muted-foreground/60">· auth: x-api-key (oculta)</span>
-            </div>
-
-            {(enrichedTeams.length > 0 || fallbackTeams.length > 0) && (
-              <div className="mt-3 grid gap-2 sm:grid-cols-2">
-                <div>
-                  <div className="text-[10.5px] uppercase tracking-[0.12em] text-muted-foreground font-semibold mb-1.5">
-                    Times reais ({enrichedTeams.length})
-                  </div>
-                  <div className="flex flex-wrap gap-1">
-                    {enrichedTeams.map((t) => (
-                      <Badge
-                        key={t.id}
-                        variant="outline"
-                        className="text-[10px] border-emerald-500/30 bg-emerald-500/5 text-emerald-200/90"
-                      >
-                        {t.name}
-                      </Badge>
-                    ))}
-                    {enrichedTeams.length === 0 && (
-                      <span className="text-[11px] text-muted-foreground italic">nenhum</span>
-                    )}
-                  </div>
+            <dl className="mt-3 space-y-1.5">
+              {rows.map((r) => (
+                <div key={r.label} className="flex items-center justify-between gap-3 text-[12px]">
+                  <dt className="text-muted-foreground">{r.label}</dt>
+                  <dd className="text-right min-w-0 truncate">{r.value}</dd>
                 </div>
-                <div>
-                  <div className="text-[10.5px] uppercase tracking-[0.12em] text-muted-foreground font-semibold mb-1.5">
-                    Mock fallback ({fallbackTeams.length})
-                  </div>
-                  <div className="flex flex-wrap gap-1">
-                    {fallbackTeams.map((t) => (
-                      <Badge key={t.id} variant="outline" className="text-[10px]">
-                        {t.name}
-                      </Badge>
-                    ))}
-                    {fallbackTeams.length === 0 && (
-                      <span className="text-[11px] text-muted-foreground italic">—</span>
-                    )}
-                  </div>
-                </div>
-              </div>
-            )}
+              ))}
+            </dl>
 
-            {error && (
-              <div className="mt-2 text-[11px] text-amber-300/90 line-clamp-2">{error}</div>
-            )}
+            {footer && <div className="mt-3 text-[11px] leading-relaxed">{footer}</div>}
           </div>
         </div>
       </CardContent>
@@ -169,3 +376,33 @@ function GridStatusCard() {
   );
 }
 
+function RoadmapCard({
+  icon: Icon,
+  title,
+  description,
+}: {
+  icon: LucideIcon;
+  title: string;
+  description: string;
+}) {
+  return (
+    <Card className="border-border/60 bg-card/40 backdrop-blur-md">
+      <CardContent className="p-4">
+        <div className="flex items-start gap-3">
+          <div className="h-9 w-9 rounded-md bg-primary/10 border border-primary/20 flex items-center justify-center shrink-0">
+            <Icon className="h-4 w-4 text-primary" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-2">
+              <span className="text-[13px] font-semibold">{title}</span>
+              <Badge variant="outline" className="text-[9px] uppercase tracking-[0.1em]">
+                em breve
+              </Badge>
+            </div>
+            <p className="text-[12px] text-muted-foreground mt-1 leading-relaxed">{description}</p>
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
