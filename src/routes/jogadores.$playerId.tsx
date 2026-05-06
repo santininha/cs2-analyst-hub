@@ -12,7 +12,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { PageHeader } from "@/components/PageHeader";
+
 import { TeamBadge } from "@/components/TeamBadge";
 import {
   getPlayer,
