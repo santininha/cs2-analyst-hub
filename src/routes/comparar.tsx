@@ -32,7 +32,7 @@ function Compare() {
   const aStats = getTeamMapStats(aId);
   const bStats = getTeamMapStats(bId);
 
-  const sharedMaps = maps.map((m) => {
+  const sharedMaps = activeMaps().map((m) => {
     const sa = aStats.find((s) => s.mapId === m.id);
     const sb = bStats.find((s) => s.mapId === m.id);
     return { map: m, a: sa, b: sb };
