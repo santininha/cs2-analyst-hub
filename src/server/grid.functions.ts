@@ -12,10 +12,6 @@ export type GridTeam = {
 export type GridPlayer = {
   id: string;
   nickname: string;
-  fullName: string | null;
-  imageUrl: string | null;
-  nationality: string[];
-  roles: string[];
   teamId: string | null;
 };
 
@@ -102,9 +98,10 @@ export const getGridTeams = createServerFn({ method: "GET" }).handler(
 // ---------- rosters ----------
 
 async function fetchRoster(apiKey: string, gridTeamId: string): Promise<GridPlayer[]> {
+  // Only id + nickname are guaranteed-readable with our key permissions.
   const query = `query Roster($id: ID!) {
     players(first: 25, filter: { titleId: ${CS2_TITLE_ID}, teamIdFilter: { id: $id } }) {
-      edges { node { id nickname fullName imageUrl nationality roles { role { name } } } }
+      edges { node { id nickname } }
     }
   }`;
   const data = await gql<any>(apiKey, query, { id: gridTeamId });
@@ -112,10 +109,6 @@ async function fetchRoster(apiKey: string, gridTeamId: string): Promise<GridPlay
   return edges.map((e: any) => ({
     id: e.node.id,
     nickname: e.node.nickname,
-    fullName: e.node.fullName ?? null,
-    imageUrl: e.node.imageUrl ?? null,
-    nationality: e.node.nationality ?? [],
-    roles: (e.node.roles ?? []).map((r: any) => r?.role?.name).filter(Boolean),
     teamId: gridTeamId,
   }));
 }

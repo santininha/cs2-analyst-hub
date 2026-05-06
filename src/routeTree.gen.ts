@@ -19,7 +19,6 @@ import { Route as PartidasIndexRouteImport } from './routes/partidas.index'
 import { Route as JogadoresIndexRouteImport } from './routes/jogadores.index'
 import { Route as PartidasMatchIdRouteImport } from './routes/partidas.$matchId'
 import { Route as JogadoresPlayerIdRouteImport } from './routes/jogadores.$playerId'
-import { Route as ApiPublicDebugGridRouteImport } from './routes/api/public/debug-grid'
 
 const NotasRoute = NotasRouteImport.update({
   id: '/notas',
@@ -71,11 +70,6 @@ const JogadoresPlayerIdRoute = JogadoresPlayerIdRouteImport.update({
   path: '/jogadores/$playerId',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiPublicDebugGridRoute = ApiPublicDebugGridRouteImport.update({
-  id: '/api/public/debug-grid',
-  path: '/api/public/debug-grid',
-  getParentRoute: () => rootRouteImport,
-} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -88,7 +82,6 @@ export interface FileRoutesByFullPath {
   '/partidas/$matchId': typeof PartidasMatchIdRoute
   '/jogadores/': typeof JogadoresIndexRoute
   '/partidas/': typeof PartidasIndexRoute
-  '/api/public/debug-grid': typeof ApiPublicDebugGridRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -101,7 +94,6 @@ export interface FileRoutesByTo {
   '/partidas/$matchId': typeof PartidasMatchIdRoute
   '/jogadores': typeof JogadoresIndexRoute
   '/partidas': typeof PartidasIndexRoute
-  '/api/public/debug-grid': typeof ApiPublicDebugGridRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -115,7 +107,6 @@ export interface FileRoutesById {
   '/partidas/$matchId': typeof PartidasMatchIdRoute
   '/jogadores/': typeof JogadoresIndexRoute
   '/partidas/': typeof PartidasIndexRoute
-  '/api/public/debug-grid': typeof ApiPublicDebugGridRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -130,7 +121,6 @@ export interface FileRouteTypes {
     | '/partidas/$matchId'
     | '/jogadores/'
     | '/partidas/'
-    | '/api/public/debug-grid'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -143,7 +133,6 @@ export interface FileRouteTypes {
     | '/partidas/$matchId'
     | '/jogadores'
     | '/partidas'
-    | '/api/public/debug-grid'
   id:
     | '__root__'
     | '/'
@@ -156,7 +145,6 @@ export interface FileRouteTypes {
     | '/partidas/$matchId'
     | '/jogadores/'
     | '/partidas/'
-    | '/api/public/debug-grid'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -170,7 +158,6 @@ export interface RootRouteChildren {
   PartidasMatchIdRoute: typeof PartidasMatchIdRoute
   JogadoresIndexRoute: typeof JogadoresIndexRoute
   PartidasIndexRoute: typeof PartidasIndexRoute
-  ApiPublicDebugGridRoute: typeof ApiPublicDebugGridRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -245,13 +232,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof JogadoresPlayerIdRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/public/debug-grid': {
-      id: '/api/public/debug-grid'
-      path: '/api/public/debug-grid'
-      fullPath: '/api/public/debug-grid'
-      preLoaderRoute: typeof ApiPublicDebugGridRouteImport
-      parentRoute: typeof rootRouteImport
-    }
   }
 }
 
@@ -266,8 +246,16 @@ const rootRouteChildren: RootRouteChildren = {
   PartidasMatchIdRoute: PartidasMatchIdRoute,
   JogadoresIndexRoute: JogadoresIndexRoute,
   PartidasIndexRoute: PartidasIndexRoute,
-  ApiPublicDebugGridRoute: ApiPublicDebugGridRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { createStart } from '@tanstack/react-start'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+  }
+}
