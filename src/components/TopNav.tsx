@@ -3,14 +3,14 @@ import { Crosshair } from "lucide-react";
 import { LiveDataBadge } from "@/components/LiveDataBadge";
 
 const nav = [
-  { label: "Analyst Desk", url: "/", exact: true },
-  { label: "Match Workspace", url: "/partidas" },
-  { label: "Team Lab", url: "/comparar" },
-  { label: "Player Analysis", url: "/jogadores" },
-  { label: "Map Analysis", url: "/mapas" },
-  { label: "Caster Notes", url: "/notas" },
-  { label: "Knowledge Hub", url: "/glossario" },
-  { label: "Data Sources", url: "/fontes" },
+  { label: "Mesa de Análise", url: "/", exact: true },
+  { label: "Sala da Partida", url: "/partidas" },
+  { label: "Laboratório de Times", url: "/comparar" },
+  { label: "Análise de Jogadores", url: "/jogadores" },
+  { label: "Análise de Mapas", url: "/mapas" },
+  { label: "Notas do Caster", url: "/notas" },
+  { label: "Central de Conhecimento", url: "/glossario" },
+  { label: "Fontes de Dados", url: "/fontes" },
 ];
 
 export function TopNav() {
@@ -49,7 +49,7 @@ export function TopNav() {
               <Link
                 key={n.url}
                 to={n.url}
-                className={`relative px-3 py-1.5 text-[12.5px] font-medium rounded-md whitespace-nowrap transition-colors ${
+                className={`relative px-3 py-1.5 text-[13.5px] font-medium rounded-md whitespace-nowrap transition-colors ${
                   active
                     ? "text-foreground"
                     : "text-muted-foreground hover:text-foreground hover:bg-muted/60"

@@ -42,23 +42,21 @@ function AnalystDesk() {
 
   return (
     <div>
-      {/* Eyebrow + Hero */}
-      <div className="mb-8 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
-        <div>
-          <span className="eyebrow">Analyst Desk · {new Date().toLocaleDateString("pt-BR", { weekday: "long", day: "2-digit", month: "long" })}</span>
-          <h1 className="text-[28px] md:text-[34px] mt-1.5 text-foreground">
-            Bom retorno, Santininha.
-          </h1>
-          <p className="text-[14px] text-muted-foreground mt-1.5 max-w-2xl leading-relaxed">
-            {upcoming.length} partidas mapeadas · {analyzing.length} em análise ativa · {latestNotes.length} novas notas de transmissão.
-          </p>
+      {/* Subtle context bar */}
+      <div className="mb-6 flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
+        <div className="flex items-center flex-wrap gap-x-2 gap-y-1 text-[12px] text-muted-foreground">
+          <span className="eyebrow !text-[10px]">Mesa de Análise</span>
+          <span className="text-muted-foreground/50">·</span>
+          <span>{new Date().toLocaleDateString("pt-BR", { weekday: "long", day: "2-digit", month: "long" })}</span>
+          <span className="text-muted-foreground/50">·</span>
+          <span>{upcoming.length} mapeadas · {analyzing.length} em análise · {latestNotes.length} notas</span>
         </div>
         <div className="flex gap-2">
           <Button variant="outline" asChild size="sm">
-            <Link to="/notas"><StickyNote className="h-3.5 w-3.5 mr-1.5" />Caster Notes</Link>
+            <Link to="/notas"><StickyNote className="h-3.5 w-3.5 mr-1.5" />Notas do Caster</Link>
           </Button>
           <Button asChild size="sm">
-            <Link to="/comparar"><Swords className="h-3.5 w-3.5 mr-1.5" />Abrir Team Lab</Link>
+            <Link to="/comparar"><Swords className="h-3.5 w-3.5 mr-1.5" />Abrir Laboratório</Link>
           </Button>
         </div>
       </div>
