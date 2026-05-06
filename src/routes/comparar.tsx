@@ -252,6 +252,62 @@ function MapBars({ ct, tr }: { ct: number; tr: number }) {
   );
 }
 
+function MapDetail({ team, stat, mapId }: { team: any; stat: any; mapId: string }) {
+  if (!stat) {
+    return (
+      <div className="rounded-lg border bg-muted/40 p-4">
+        <div className="flex items-center gap-2 mb-2">
+          <TeamBadge team={team} size="sm" />
+          <span className="font-bold">{team.name}</span>
+        </div>
+        <p className="text-sm text-muted-foreground">Sem dados recentes neste mapa.</p>
+      </div>
+    );
+  }
+  const history = getTeamMapHistory(team.id, mapId);
+  const wins = history.filter((h) => h.result === "W").length;
+  return (
+    <div className="rounded-lg border bg-muted/40 p-4 space-y-4">
+      <div className="flex items-center gap-2">
+        <TeamBadge team={team} size="sm" />
+        <span className="font-bold">{team.name}</span>
+        <Badge variant="outline" className="ml-auto">{stat.played} jogos</Badge>
+      </div>
+      <div className="grid grid-cols-3 gap-2 text-center">
+        <div className="rounded-md bg-background p-3">
+          <div className="text-2xl font-extrabold text-primary">{stat.winRate}%</div>
+          <div className="text-[11px] uppercase tracking-wide text-muted-foreground font-semibold">Win rate</div>
+        </div>
+        <div className="rounded-md bg-background p-3">
+          <div className="text-2xl font-extrabold text-blue-600">{stat.ctWinRate}%</div>
+          <div className="text-[11px] uppercase tracking-wide text-muted-foreground font-semibold">CT</div>
+        </div>
+        <div className="rounded-md bg-background p-3">
+          <div className="text-2xl font-extrabold text-orange-600">{stat.trWinRate}%</div>
+          <div className="text-[11px] uppercase tracking-wide text-muted-foreground font-semibold">TR</div>
+        </div>
+      </div>
+      <MapBars ct={stat.ctWinRate} tr={stat.trWinRate} />
+      <div>
+        <div className="flex items-center justify-between mb-2">
+          <span className="text-xs font-bold uppercase tracking-wide text-muted-foreground">Últimos 5 jogos</span>
+          <span className="text-xs font-semibold">{wins}V — {history.length - wins}D</span>
+        </div>
+        <div className="space-y-1">
+          {history.map((h, i) => (
+            <div key={i} className="flex items-center justify-between text-sm bg-background rounded px-2 py-1">
+              <span className={`font-bold w-6 ${h.result === "W" ? "text-green-600" : "text-destructive"}`}>{h.result}</span>
+              <span className="text-muted-foreground">vs {h.opponent}</span>
+              <span className="font-mono">{h.score}</span>
+              <span className="text-xs text-muted-foreground">{h.date}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function SideStats({ team, best, worst }: any) {
   return (
     <Card>
