@@ -1,8 +1,6 @@
 import { Outlet, Link, createRootRoute, HeadContent, Scripts } from "@tanstack/react-router";
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import { AppSidebar } from "@/components/AppSidebar";
 import { Toaster } from "@/components/ui/sonner";
-import { LiveDataBadge } from "@/components/LiveDataBadge";
+import { TopNav } from "@/components/TopNav";
 
 import appCss from "../styles.css?url";
 
@@ -17,7 +15,7 @@ function NotFoundComponent() {
             to="/"
             className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:opacity-90"
           >
-            Voltar ao Dashboard
+            Voltar ao Analyst Desk
           </Link>
         </div>
       </div>
@@ -30,8 +28,8 @@ export const Route = createRootRoute({
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "CS2 Analyst Hub — Painel da Caster" },
-      { name: "description", content: "Hub profissional de análise de Counter-Strike 2 para casters e analistas." },
+      { title: "CS2 Analyst Hub — Workspace da Caster" },
+      { name: "description", content: "Workspace contextual de análise de Counter-Strike 2 para casters e analistas." },
     ],
     links: [{ rel: "stylesheet", href: appCss }],
   }),
@@ -56,24 +54,14 @@ function RootShell({ children }: { children: React.ReactNode }) {
 
 function RootComponent() {
   return (
-    <SidebarProvider>
-      <div className="min-h-screen flex w-full bg-background">
-        <AppSidebar />
-        <div className="flex-1 flex flex-col min-w-0">
-          <header className="h-14 flex items-center gap-3 border-b border-border/60 bg-card/80 backdrop-blur px-4 sticky top-0 z-10">
-            <SidebarTrigger />
-            <div className="flex-1" />
-            <LiveDataBadge />
-            <span className="text-[11px] text-muted-foreground hidden md:inline">
-              Modo <span className="text-foreground font-semibold">Caster ao vivo</span>
-            </span>
-          </header>
-          <main className="flex-1 p-4 md:p-6 overflow-auto">
-            <Outlet />
-          </main>
+    <div className="min-h-screen flex flex-col bg-background">
+      <TopNav />
+      <main className="flex-1 px-4 md:px-6 py-6 md:py-8">
+        <div className="max-w-[1400px] mx-auto">
+          <Outlet />
         </div>
-        <Toaster />
-      </div>
-    </SidebarProvider>
+      </main>
+      <Toaster />
+    </div>
   );
 }
