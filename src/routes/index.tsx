@@ -6,7 +6,6 @@ import { TeamBadge } from "@/components/TeamBadge";
 import {
   matches,
   getTeam,
-  teams,
   players,
   notes,
 } from "@/data/mock";
