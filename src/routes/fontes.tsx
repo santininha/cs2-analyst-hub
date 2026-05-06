@@ -3,6 +3,9 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { PageHeader } from "@/components/PageHeader";
 import { useIntegrationStatus } from "@/lib/integrationStatus";
+import { MapPoolStatusCard } from "@/components/MapPoolStatusCard";
+import { TEAM_SCOPES, DEFAULT_ANALYSIS_WINDOW } from "@/lib/mapPool";
+import { Trophy, Globe2 } from "lucide-react";
 import {
   CheckCircle2,
   AlertTriangle,
