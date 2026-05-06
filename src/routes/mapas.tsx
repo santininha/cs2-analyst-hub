@@ -71,12 +71,12 @@ function MapsPage() {
                 <div>
                   <div className="flex items-center gap-2 text-xs">
                     <span className="text-side-ct font-bold w-6">CT</span>
-                    <Progress value={m.ctWinRate} className="h-2" />
+                    <Progress value={m.ctWinRate} className="h-2 bg-side-ct/15" indicatorClassName="bg-side-ct" />
                     <span className="font-mono w-9">{m.ctWinRate}%</span>
                   </div>
                   <div className="flex items-center gap-2 text-xs mt-1">
                     <span className="text-side-tr font-bold w-6">TR</span>
-                    <Progress value={m.trWinRate} className="h-2" />
+                    <Progress value={m.trWinRate} className="h-2 bg-side-tr/15" indicatorClassName="bg-side-tr" />
                     <span className="font-mono w-9">{m.trWinRate}%</span>
                   </div>
                   <div className="text-[10px] text-muted-foreground mt-1">
