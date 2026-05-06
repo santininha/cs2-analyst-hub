@@ -11,6 +11,8 @@ import {
   notes,
 } from "@/data/mock";
 import { useTeams, useRoster } from "@/contexts/TeamsContext";
+import { useMatches } from "@/contexts/MatchesContext";
+import type { MatchEnriched } from "@/lib/matchTypes";
 import {
   Swords,
   Calendar,
@@ -35,13 +37,13 @@ export const Route = createFileRoute("/")({
 
 function AnalystDesk() {
   const { teams: liveTeams } = useTeams();
-  const upcoming = matches.filter((m) => m.status === "upcoming");
+  const { upcoming, live, completed, loading: matchesLoading, source: matchesSource } = useMatches();
   const analyzing = matches.filter((m) => m.preNotes || m.techNotes || m.keywords?.length);
-  const recent = matches.filter((m) => m.status === "finished").slice(0, 3);
+  const recent = completed.slice(0, 3);
   const trendingTeams = [...liveTeams].sort((a, b) => a.worldRank - b.worldRank).slice(0, 5);
   const topPlayers = [...players].sort((a, b) => b.rating - a.rating).slice(0, 4);
   const latestNotes = [...notes].sort((a, b) => (a.date < b.date ? 1 : -1)).slice(0, 3);
-  const nextMatch = upcoming[0];
+  const nextMatch = live[0] ?? upcoming[0];
 
   return (
     <div>
