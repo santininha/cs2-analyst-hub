@@ -6,7 +6,8 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { PageHeader } from "@/components/PageHeader";
 import { TeamBadge } from "@/components/TeamBadge";
-import { teams, getTeam, getTeamPlayers, getTeamMapStats, maps, matches } from "@/data/mock";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { teams, getTeam, getTeamPlayers, getTeamMapStats, getTeamMapHistory, maps, matches } from "@/data/mock";
 import { Mic, TrendingUp, TrendingDown } from "lucide-react";
 
 export const Route = createFileRoute("/comparar")({
@@ -147,21 +148,53 @@ function Compare() {
       </div>
 
       <Card className="mb-6">
-        <CardHeader><CardTitle>Desempenho CT/TR por mapa</CardTitle></CardHeader>
-        <CardContent className="space-y-4">
-          {sharedMaps.map(({ map, a: sa, b: sb }) => (
-            <div key={map.id} className="grid grid-cols-7 gap-3 items-center text-sm">
-              <div className="font-semibold col-span-1">{map.name}</div>
-              <div className="col-span-3">
-                <div className="text-xs text-muted-foreground mb-1">{a.tag}</div>
-                {sa ? <MapBars ct={sa.ctWinRate} tr={sa.trWinRate} /> : <span className="text-xs text-muted-foreground">sem dados</span>}
-              </div>
-              <div className="col-span-3">
-                <div className="text-xs text-muted-foreground mb-1">{b.tag}</div>
-                {sb ? <MapBars ct={sb.ctWinRate} tr={sb.trWinRate} /> : <span className="text-xs text-muted-foreground">sem dados</span>}
-              </div>
-            </div>
-          ))}
+        <CardHeader>
+          <CardTitle className="text-xl">Análise mapa a mapa</CardTitle>
+          <p className="text-sm text-muted-foreground">Clique em um mapa para abrir a comparação detalhada.</p>
+        </CardHeader>
+        <CardContent>
+          <Accordion type="single" collapsible className="w-full">
+            {sharedMaps.map(({ map, a: sa, b: sb }) => {
+              const wrA = sa?.winRate ?? 0;
+              const wrB = sb?.winRate ?? 0;
+              const diff = wrA - wrB;
+              const advTeam = diff === 0 ? null : diff > 0 ? a : b;
+              return (
+                <AccordionItem key={map.id} value={map.id} className="border-b last:border-0">
+                  <AccordionTrigger className="hover:no-underline py-4">
+                    <div className="flex items-center gap-4 w-full pr-4">
+                      <span className="font-extrabold text-lg w-28 text-left">{map.name}</span>
+                      <div className="flex-1 grid grid-cols-3 items-center gap-2 text-sm">
+                        <div className="text-right">
+                          <span className="text-xs text-muted-foreground mr-2">{a.tag}</span>
+                          <Badge variant="outline" className="font-bold">{sa ? `${sa.winRate}%` : "—"}</Badge>
+                        </div>
+                        <div className="text-center">
+                          {advTeam ? (
+                            <Badge className="bg-primary text-primary-foreground font-bold">
+                              {advTeam.tag} +{Math.abs(diff)}pp
+                            </Badge>
+                          ) : (
+                            <span className="text-xs text-muted-foreground">equilibrado</span>
+                          )}
+                        </div>
+                        <div className="text-left">
+                          <Badge variant="outline" className="font-bold">{sb ? `${sb.winRate}%` : "—"}</Badge>
+                          <span className="text-xs text-muted-foreground ml-2">{b.tag}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </AccordionTrigger>
+                  <AccordionContent>
+                    <div className="grid gap-6 md:grid-cols-2 pt-2">
+                      <MapDetail team={a} stat={sa} mapId={map.id} />
+                      <MapDetail team={b} stat={sb} mapId={map.id} />
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
+              );
+            })}
+          </Accordion>
         </CardContent>
       </Card>
 
@@ -214,6 +247,62 @@ function MapBars({ ct, tr }: { ct: number; tr: number }) {
         <span className="text-[10px] w-6 text-orange-600 font-bold">TR</span>
         <Progress value={tr} className="h-2" />
         <span className="text-xs font-mono w-9">{tr}%</span>
+      </div>
+    </div>
+  );
+}
+
+function MapDetail({ team, stat, mapId }: { team: any; stat: any; mapId: string }) {
+  if (!stat) {
+    return (
+      <div className="rounded-lg border bg-muted/40 p-4">
+        <div className="flex items-center gap-2 mb-2">
+          <TeamBadge team={team} size="sm" />
+          <span className="font-bold">{team.name}</span>
+        </div>
+        <p className="text-sm text-muted-foreground">Sem dados recentes neste mapa.</p>
+      </div>
+    );
+  }
+  const history = getTeamMapHistory(team.id, mapId);
+  const wins = history.filter((h) => h.result === "W").length;
+  return (
+    <div className="rounded-lg border bg-muted/40 p-4 space-y-4">
+      <div className="flex items-center gap-2">
+        <TeamBadge team={team} size="sm" />
+        <span className="font-bold">{team.name}</span>
+        <Badge variant="outline" className="ml-auto">{stat.played} jogos</Badge>
+      </div>
+      <div className="grid grid-cols-3 gap-2 text-center">
+        <div className="rounded-md bg-background p-3">
+          <div className="text-2xl font-extrabold text-primary">{stat.winRate}%</div>
+          <div className="text-[11px] uppercase tracking-wide text-muted-foreground font-semibold">Win rate</div>
+        </div>
+        <div className="rounded-md bg-background p-3">
+          <div className="text-2xl font-extrabold text-blue-600">{stat.ctWinRate}%</div>
+          <div className="text-[11px] uppercase tracking-wide text-muted-foreground font-semibold">CT</div>
+        </div>
+        <div className="rounded-md bg-background p-3">
+          <div className="text-2xl font-extrabold text-orange-600">{stat.trWinRate}%</div>
+          <div className="text-[11px] uppercase tracking-wide text-muted-foreground font-semibold">TR</div>
+        </div>
+      </div>
+      <MapBars ct={stat.ctWinRate} tr={stat.trWinRate} />
+      <div>
+        <div className="flex items-center justify-between mb-2">
+          <span className="text-xs font-bold uppercase tracking-wide text-muted-foreground">Últimos 5 jogos</span>
+          <span className="text-xs font-semibold">{wins}V — {history.length - wins}D</span>
+        </div>
+        <div className="space-y-1">
+          {history.map((h, i) => (
+            <div key={i} className="flex items-center justify-between text-sm bg-background rounded px-2 py-1">
+              <span className={`font-bold w-6 ${h.result === "W" ? "text-green-600" : "text-destructive"}`}>{h.result}</span>
+              <span className="text-muted-foreground">vs {h.opponent}</span>
+              <span className="font-mono">{h.score}</span>
+              <span className="text-xs text-muted-foreground">{h.date}</span>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );

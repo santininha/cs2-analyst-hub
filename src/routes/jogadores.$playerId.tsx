@@ -5,9 +5,23 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Progress } from "@/components/ui/progress";
-import { PageHeader } from "@/components/PageHeader";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+
 import { TeamBadge } from "@/components/TeamBadge";
-import { getPlayer, getTeam, notes as allNotes } from "@/data/mock";
+import {
+  getPlayer,
+  getTeam,
+  getPlayerMapStats,
+  maps,
+  notes as allNotes,
+  type PlayerMapStat,
+} from "@/data/mock";
 import { ArrowLeft, Save } from "lucide-react";
 import { toast } from "sonner";
 
@@ -22,28 +36,42 @@ export const Route = createFileRoute("/jogadores/$playerId")({
     return { meta: [{ title: `${p?.nick ?? "Jogador"} — CS2 Analyst Hub` }] };
   },
   notFoundComponent: () => <div className="p-6">Jogador não encontrado.</div>,
-  errorComponent: ({ error }) => <div className="p-6 text-destructive">{error.message}</div>,
+  errorComponent: ({ error }) => (
+    <div className="p-6 text-destructive">{error.message}</div>
+  ),
   component: PlayerPage,
 });
+
+type Side = "all" | "ct" | "t";
 
 function PlayerPage() {
   const p = Route.useLoaderData() as import("@/data/mock").Player;
   const team = getTeam(p.teamId)!;
   const [note, setNote] = useState(p.notes ?? "");
   const linked = allNotes.filter((n) => n.linkedPlayerId === p.id);
+  const mapStats = getPlayerMapStats(p.id);
 
   return (
-    <div className="max-w-5xl mx-auto">
-      <Button variant="ghost" size="sm" asChild className="mb-3"><Link to="/jogadores"><ArrowLeft className="h-4 w-4 mr-1" />Times & Jogadores</Link></Button>
+    <div className="max-w-6xl mx-auto">
+      <Button variant="ghost" size="sm" asChild className="mb-3">
+        <Link to="/jogadores">
+          <ArrowLeft className="h-4 w-4 mr-1" />
+          Times & Jogadores
+        </Link>
+      </Button>
 
       <Card className="mb-6">
-        <CardContent className="p-6 flex items-center gap-4">
+        <CardContent className="p-6 flex items-center gap-5">
           <TeamBadge team={team} size="lg" />
           <div className="flex-1">
-            <div className="text-3xl font-bold">{p.nick}</div>
-            <div className="text-sm text-muted-foreground">{p.realName} • {p.role} • {team.name}</div>
+            <div className="text-4xl font-extrabold tracking-tight">{p.nick}</div>
+            <div className="text-base text-muted-foreground mt-1">
+              {p.realName} • {p.role} • {team.name}
+            </div>
           </div>
-          <Badge className="text-lg px-3 py-1" variant="outline">Rating {p.rating.toFixed(2)}</Badge>
+          <Badge className="text-lg px-4 py-2 bg-primary text-primary-foreground font-bold">
+            Rating {p.rating.toFixed(2)}
+          </Badge>
         </CardContent>
       </Card>
 
@@ -54,54 +82,83 @@ function PlayerPage() {
         <BigStat label="Rating" value={p.rating.toFixed(2)} highlight />
       </div>
 
-      <div className="grid gap-6 md:grid-cols-2 mb-6">
-        <Card>
-          <CardHeader><CardTitle className="text-base">Desempenho por lado</CardTitle></CardHeader>
-          <CardContent className="space-y-3">
-            <div>
-              <div className="flex justify-between text-sm mb-1"><span className="text-blue-600 font-bold">CT</span><span>{p.ctRating.toFixed(2)}</span></div>
-              <Progress value={(p.ctRating / 1.5) * 100} className="h-2" />
-            </div>
-            <div>
-              <div className="flex justify-between text-sm mb-1"><span className="text-orange-600 font-bold">TR</span><span>{p.trRating.toFixed(2)}</span></div>
-              <Progress value={(p.trRating / 1.5) * 100} className="h-2" />
-            </div>
-          </CardContent>
-        </Card>
+      <Tabs defaultValue="all" className="mb-6">
+        <TabsList className="h-11">
+          <TabsTrigger value="all" className="text-base font-semibold px-5">
+            Geral
+          </TabsTrigger>
+          <TabsTrigger value="t" className="text-base font-semibold px-5">
+            T Side
+          </TabsTrigger>
+          <TabsTrigger value="ct" className="text-base font-semibold px-5">
+            CT Side
+          </TabsTrigger>
+        </TabsList>
 
-        <Card>
-          <CardHeader><CardTitle className="text-base">Mapas</CardTitle></CardHeader>
-          <CardContent className="space-y-2">
-            <div>
-              <div className="text-xs font-semibold text-muted-foreground">Fortes</div>
-              <div className="flex gap-1 flex-wrap mt-1">{p.strongMaps.map((m) => <Badge key={m} className="bg-green-100 text-green-800 hover:bg-green-100">{m}</Badge>)}</div>
-            </div>
-            <div>
-              <div className="text-xs font-semibold text-muted-foreground">Fracos</div>
-              <div className="flex gap-1 flex-wrap mt-1">{p.weakMaps.length ? p.weakMaps.map((m) => <Badge key={m} variant="outline" className="border-destructive text-destructive">{m}</Badge>) : <span className="text-xs text-muted-foreground">— sem fraquezas notáveis</span>}</div>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+        <TabsContent value="all" className="mt-4">
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-lg">Desempenho geral por mapa</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <MapList stats={mapStats} side="all" />
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="t" className="mt-4">
+          <Card className="border-orange-300/40">
+            <CardHeader>
+              <CardTitle className="text-lg text-orange-600">T Side por mapa</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <MapList stats={mapStats} side="t" />
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="ct" className="mt-4">
+          <Card className="border-blue-300/40">
+            <CardHeader>
+              <CardTitle className="text-lg text-blue-600">CT Side por mapa</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <MapList stats={mapStats} side="ct" />
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
 
       <Card className="mb-6">
-        <CardHeader><CardTitle className="text-base">Anotações da caster</CardTitle></CardHeader>
+        <CardHeader>
+          <CardTitle className="text-lg">Anotações da caster</CardTitle>
+        </CardHeader>
         <CardContent>
-          <Textarea value={note} onChange={(e) => setNote(e.target.value)} rows={4} placeholder="Suas observações sobre este jogador..." />
+          <Textarea
+            value={note}
+            onChange={(e) => setNote(e.target.value)}
+            rows={4}
+            placeholder="Suas observações sobre este jogador..."
+          />
           <div className="flex justify-end mt-3">
-            <Button onClick={() => toast.success("Anotação salva.")}><Save className="h-4 w-4 mr-2" />Salvar</Button>
+            <Button onClick={() => toast.success("Anotação salva.")}>
+              <Save className="h-4 w-4 mr-2" />
+              Salvar
+            </Button>
           </div>
         </CardContent>
       </Card>
 
       {linked.length > 0 && (
         <Card>
-          <CardHeader><CardTitle className="text-base">Notas relacionadas</CardTitle></CardHeader>
+          <CardHeader>
+            <CardTitle className="text-lg">Notas relacionadas</CardTitle>
+          </CardHeader>
           <CardContent className="space-y-2">
             {linked.map((n) => (
-              <div key={n.id} className="border rounded p-3">
-                <div className="font-semibold text-sm">{n.title}</div>
-                <div className="text-sm text-muted-foreground">{n.content}</div>
+              <div key={n.id} className="border rounded-md p-4 bg-muted/30">
+                <div className="font-bold">{n.title}</div>
+                <div className="text-sm text-muted-foreground mt-1">{n.content}</div>
               </div>
             ))}
           </CardContent>
@@ -111,12 +168,91 @@ function PlayerPage() {
   );
 }
 
-function BigStat({ label, value, highlight }: { label: string; value: string; highlight?: boolean }) {
+function MapList({ stats, side }: { stats: PlayerMapStat[]; side: Side }) {
+  const ratingFor = (s: PlayerMapStat) =>
+    side === "ct" ? s.ctRating : side === "t" ? s.trRating : s.rating;
+
+  const sorted = [...stats].sort((a, b) => ratingFor(b) - ratingFor(a));
+
   return (
-    <Card className={highlight ? "border-primary" : ""}>
-      <CardContent className="p-4 text-center">
-        <div className={`text-3xl font-bold ${highlight ? "text-primary" : ""}`}>{value}</div>
-        <div className="text-xs text-muted-foreground uppercase">{label}</div>
+    <Accordion type="single" collapsible className="w-full">
+      {sorted.map((s) => {
+        const map = maps.find((m) => m.id === s.mapId)!;
+        const r = ratingFor(s);
+        const tone =
+          r >= 1.2 ? "text-green-600" : r >= 1.0 ? "text-foreground" : "text-destructive";
+        return (
+          <AccordionItem key={s.mapId} value={s.mapId} className="border-b last:border-0">
+            <AccordionTrigger className="hover:no-underline py-3">
+              <div className="flex items-center gap-4 w-full pr-4 text-sm">
+                <span className="font-extrabold text-base w-28 text-left">{map.name}</span>
+                <div className="flex-1 grid grid-cols-3 gap-2 text-center">
+                  <div>
+                    <div className={`font-bold ${tone}`}>{r.toFixed(2)}</div>
+                    <div className="text-[10px] uppercase text-muted-foreground">Rating</div>
+                  </div>
+                  <div>
+                    <div className="font-bold">{s.kd.toFixed(2)}</div>
+                    <div className="text-[10px] uppercase text-muted-foreground">K/D</div>
+                  </div>
+                  <div>
+                    <div className="font-bold">{s.impact.toFixed(2)}</div>
+                    <div className="text-[10px] uppercase text-muted-foreground">Impacto</div>
+                  </div>
+                </div>
+              </div>
+            </AccordionTrigger>
+            <AccordionContent>
+              <div className="grid gap-3 md:grid-cols-2 pt-1">
+                <div className="rounded-md bg-muted/40 p-3 space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold text-blue-600 uppercase">CT</span>
+                    <span className="font-mono text-sm">{s.ctRating.toFixed(2)}</span>
+                  </div>
+                  <Progress value={(s.ctRating / 1.6) * 100} className="h-2" />
+                  <div className="flex items-center justify-between mt-3">
+                    <span className="text-xs font-bold text-orange-600 uppercase">TR</span>
+                    <span className="font-mono text-sm">{s.trRating.toFixed(2)}</span>
+                  </div>
+                  <Progress value={(s.trRating / 1.6) * 100} className="h-2" />
+                </div>
+                <div className="rounded-md bg-muted/40 p-3 grid grid-cols-2 gap-3 text-center">
+                  <div>
+                    <div className="text-2xl font-extrabold text-primary">{s.adr}</div>
+                    <div className="text-[10px] uppercase text-muted-foreground font-semibold">ADR</div>
+                  </div>
+                  <div>
+                    <div className="text-2xl font-extrabold">{s.impact.toFixed(2)}</div>
+                    <div className="text-[10px] uppercase text-muted-foreground font-semibold">Impact</div>
+                  </div>
+                </div>
+              </div>
+            </AccordionContent>
+          </AccordionItem>
+        );
+      })}
+    </Accordion>
+  );
+}
+
+function BigStat({
+  label,
+  value,
+  highlight,
+}: {
+  label: string;
+  value: string;
+  highlight?: boolean;
+}) {
+  return (
+    <Card className={highlight ? "border-primary border-2" : ""}>
+      <CardContent className="p-5 text-center">
+        <div className={`text-4xl font-extrabold ${highlight ? "text-primary" : ""}`}>
+          {value}
+        </div>
+        <div className="text-xs text-muted-foreground uppercase tracking-wider font-semibold mt-1">
+          {label}
+        </div>
       </CardContent>
     </Card>
   );

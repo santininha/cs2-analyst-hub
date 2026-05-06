@@ -250,3 +250,67 @@ export const getMap = (id: string) => maps.find((m) => m.id === id);
 export const getMatch = (id: string) => matches.find((m) => m.id === id);
 export const getTeamPlayers = (teamId: string) => players.filter((p) => p.teamId === teamId);
 export const getTeamMapStats = (teamId: string) => teamMapStats.filter((s) => s.teamId === teamId);
+
+function hash(s: string) {
+  let h = 2166136261;
+  for (let i = 0; i < s.length; i++) {
+    h ^= s.charCodeAt(i);
+    h = Math.imul(h, 16777619);
+  }
+  return (h >>> 0) / 0xffffffff;
+}
+
+export type TeamMapHistoryEntry = {
+  opponent: string;
+  score: string;
+  result: "W" | "L";
+  date: string;
+};
+
+export function getTeamMapHistory(teamId: string, mapId: string): TeamMapHistoryEntry[] {
+  const otherTeams = teams.filter((t) => t.id !== teamId);
+  const entries: TeamMapHistoryEntry[] = [];
+  for (let i = 0; i < 5; i++) {
+    const r = hash(teamId + mapId + i);
+    const opp = otherTeams[Math.floor(r * otherTeams.length)];
+    const win = hash(teamId + mapId + "w" + i) > 0.42;
+    const a = win ? 13 : 8 + Math.floor(r * 5);
+    const b = win ? 8 + Math.floor(r * 5) : 13;
+    const d = new Date(2026, 3, 28 - i * 3);
+    entries.push({
+      opponent: opp.tag,
+      score: `${a}-${b}`,
+      result: win ? "W" : "L",
+      date: d.toISOString().slice(0, 10),
+    });
+  }
+  return entries;
+}
+
+export type PlayerMapStat = {
+  mapId: string;
+  rating: number;
+  kd: number;
+  adr: number;
+  impact: number;
+  ctRating: number;
+  trRating: number;
+};
+
+export function getPlayerMapStats(playerId: string): PlayerMapStat[] {
+  const p = getPlayer(playerId);
+  if (!p) return [];
+  return maps.map((m) => {
+    const r = hash(playerId + m.id);
+    const isStrong = p.strongMaps.includes(m.name);
+    const isWeak = p.weakMaps.includes(m.name);
+    const bias = isStrong ? 0.15 : isWeak ? -0.15 : 0;
+    const rating = +(p.rating + bias + (r - 0.5) * 0.1).toFixed(2);
+    const kd = +(p.kd + bias + (r - 0.5) * 0.1).toFixed(2);
+    const adr = Math.round(p.adr + bias * 20 + (r - 0.5) * 8);
+    const impact = +(1 + bias + (r - 0.5) * 0.2).toFixed(2);
+    const ctRating = +(p.ctRating + bias + (r - 0.5) * 0.08).toFixed(2);
+    const trRating = +(p.trRating + bias + (r - 0.5) * 0.08).toFixed(2);
+    return { mapId: m.id, rating, kd, adr, impact, ctRating, trRating };
+  });
+}
