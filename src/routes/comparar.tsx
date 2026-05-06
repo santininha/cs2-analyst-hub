@@ -112,32 +112,32 @@ function Compare() {
         <TeamPicker label="Time B" value={bId} onChange={setBId} exclude={aId} />
       </div>
 
-      <Card className="mb-6 border-primary/30">
-        <CardContent className="p-6">
+      <Card className="mb-6 border-border/60">
+        <CardContent className="p-5">
           <div className="grid grid-cols-3 items-center gap-4">
             <TeamHeader team={a} align="left" />
             <div className="text-center">
-              <div className="text-sm text-muted-foreground mb-1">Head-to-head</div>
-              <div className="text-4xl font-black text-primary">{h2h.total}</div>
-              <div className="text-xs text-muted-foreground">confrontos no histórico</div>
+              <div className="text-[11px] uppercase tracking-wider text-muted-foreground font-semibold mb-1">Head-to-head</div>
+              <div className="text-3xl font-bold text-primary">{h2h.total}</div>
+              <div className="text-[11px] text-muted-foreground">confrontos no histórico</div>
             </div>
             <TeamHeader team={b} align="right" />
           </div>
         </CardContent>
       </Card>
 
-      <Card className="mb-6 bg-primary text-primary-foreground border-primary">
-        <CardHeader className="pb-3">
-          <CardTitle className="flex items-center gap-2 text-primary-foreground">
-            <Mic className="h-5 w-5" /> O que falar ao vivo
+      <Card className="mb-6 bg-primary-soft border-primary/20">
+        <CardHeader className="pb-2">
+          <CardTitle className="flex items-center gap-2 text-primary text-[14px]">
+            <Mic className="h-4 w-4" /> O que falar ao vivo
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <ul className="space-y-2 text-sm">
+          <ul className="space-y-1.5 text-[13px]">
             {insights.map((i, idx) => (
-              <li key={idx} className="flex gap-2">
-                <span className="font-bold">→</span>
-                <span>{i}</span>
+              <li key={idx} className="flex gap-2 leading-relaxed">
+                <span className="text-primary font-bold shrink-0">→</span>
+                <span className="text-foreground/90">{i}</span>
               </li>
             ))}
           </ul>
