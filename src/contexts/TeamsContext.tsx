@@ -8,6 +8,10 @@ type TeamsContextValue = {
   source: "mock" | "grid" | "mock+grid";
   loading: boolean;
   error: string | null;
+  gridCount: number;
+  matchedCount: number;
+  lastSync: Date | null;
+  cached: boolean;
 };
 
 const TeamsContext = createContext<TeamsContextValue | null>(null);
