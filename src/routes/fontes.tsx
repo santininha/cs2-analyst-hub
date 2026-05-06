@@ -4,7 +4,8 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { PageHeader } from "@/components/PageHeader";
 import { dataSources } from "@/data/mock";
-import { Database, FileSpreadsheet, FileJson, Link as LinkIcon, Construction } from "lucide-react";
+import { useTeams } from "@/contexts/TeamsContext";
+import { Database, FileSpreadsheet, FileJson, Link as LinkIcon, Construction, CheckCircle2, AlertTriangle, Loader2 } from "lucide-react";
 
 export const Route = createFileRoute("/fontes")({
   head: () => ({ meta: [{ title: "Fontes de Dados — CS2 Analyst Hub" }] }),
