@@ -71,19 +71,19 @@ function GlossaryPage() {
         </CardContent>
       </Card>
 
-      <div className="grid gap-3">
+      <div className="grid gap-2.5">
         {filtered.map((g) => (
-          <Card key={g.id} className="hover:shadow-md transition-shadow">
-            <CardContent className="p-5 flex items-start gap-4">
-              <button onClick={() => toggleFav(g.id)} className="mt-1 shrink-0">
-                <Star className={`h-6 w-6 ${g.favorite ? "fill-primary text-primary" : "text-muted-foreground"}`} />
+          <Card key={g.id} className="hover:border-primary/40 transition-colors">
+            <CardContent className="p-4 flex items-start gap-3">
+              <button onClick={() => toggleFav(g.id)} className="mt-0.5 shrink-0">
+                <Star className={`h-5 w-5 ${g.favorite ? "fill-primary text-primary" : "text-muted-foreground/60"}`} />
               </button>
               <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2 mb-2 flex-wrap">
-                  <span className="text-lg font-extrabold uppercase tracking-wide text-primary">{g.term}</span>
-                  <Badge variant="outline" className="text-[11px] font-semibold">{g.category}</Badge>
+                <div className="flex items-center gap-2 mb-1.5 flex-wrap">
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-primary">{g.term}</span>
+                  <Badge variant="outline" className="text-[10px] font-medium">{g.category}</Badge>
                 </div>
-                <p className="text-xl md:text-2xl font-bold leading-snug text-foreground">
+                <p className="text-[15px] md:text-base font-semibold leading-snug text-foreground">
                   "{g.phrase}"
                 </p>
               </div>
