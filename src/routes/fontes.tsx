@@ -3,6 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { PageHeader } from "@/components/PageHeader";
 import { useIntegrationStatus } from "@/lib/integrationStatus";
+import { useMatches } from "@/contexts/MatchesContext";
 import { MapPoolStatusCard } from "@/components/MapPoolStatusCard";
 import { TEAM_SCOPES, DEFAULT_ANALYSIS_WINDOW } from "@/lib/mapPool";
 import { Trophy, Globe2 } from "lucide-react";
@@ -84,6 +85,7 @@ function toneClasses(tone: Tone) {
 
 function DataSourcesPage() {
   const s = useIntegrationStatus();
+  const matchesCtx = useMatches();
 
   const gridTone: Tone =
     s.gridState === "connected"
