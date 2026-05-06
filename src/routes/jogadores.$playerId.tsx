@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/accordion";
 
 import { TeamBadge } from "@/components/TeamBadge";
+import { DataSourceTag } from "@/components/DataSourceTag";
 import {
   getPlayer,
   getTeam,
@@ -64,7 +65,10 @@ function PlayerPage() {
         <CardContent className="p-5 flex items-center gap-4">
           <TeamBadge team={team} size="lg" />
           <div className="flex-1">
-            <div className="text-2xl font-bold tracking-tight">{p.nick}</div>
+            <div className="text-2xl font-bold tracking-tight flex items-center gap-2">
+              {p.nick}
+              <DataSourceTag team={team} size="xs" />
+            </div>
             <div className="text-[13px] text-muted-foreground mt-0.5">
               {p.realName} • {p.role} • {team.name}
             </div>
