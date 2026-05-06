@@ -8,6 +8,10 @@ type TeamsContextValue = {
   source: "mock" | "grid" | "mock+grid";
   loading: boolean;
   error: string | null;
+  gridCount: number;
+  matchedCount: number;
+  lastSync: Date | null;
+  cached: boolean;
 };
 
 const TeamsContext = createContext<TeamsContextValue | null>(null);
@@ -42,6 +46,10 @@ export function TeamsProvider({ children }: { children: ReactNode }) {
   const [source, setSource] = useState<TeamsContextValue["source"]>("mock");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [gridCount, setGridCount] = useState(0);
+  const [matchedCount, setMatchedCount] = useState(0);
+  const [lastSync, setLastSync] = useState<Date | null>(null);
+  const [cached, setCached] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -49,12 +57,16 @@ export function TeamsProvider({ children }: { children: ReactNode }) {
       try {
         const res = await getGridTeams();
         if (cancelled) return;
+        setGridCount(res.teams.length);
+        setCached(res.cached);
+        setLastSync(new Date());
         if (res.error && res.teams.length === 0) {
           setError(res.error);
           setSource("mock");
         } else {
           const { merged, matched } = mergeTeams(mockTeams, res.teams);
           setTeams(merged);
+          setMatchedCount(matched);
           setSource(matched > 0 ? "mock+grid" : "mock");
           setError(res.error);
         }
@@ -72,8 +84,8 @@ export function TeamsProvider({ children }: { children: ReactNode }) {
   const value = useMemo<TeamsContextValue>(() => {
     const bySlug: Record<string, Team> = {};
     for (const t of teams) bySlug[t.id] = t;
-    return { teams, bySlug, source, loading, error };
-  }, [teams, source, loading, error]);
+    return { teams, bySlug, source, loading, error, gridCount, matchedCount, lastSync, cached };
+  }, [teams, source, loading, error, gridCount, matchedCount, lastSync, cached]);
 
   return <TeamsContext.Provider value={value}>{children}</TeamsContext.Provider>;
 }

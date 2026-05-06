@@ -290,13 +290,15 @@ function MatchRow({ matchId, analyzing }: { matchId: string; analyzing?: boolean
   const m = matches.find((x) => x.id === matchId)!;
   const a = getTeam(m.teamAId)!;
   const b = getTeam(m.teamBId)!;
+  const accent = a.colorPrimary ?? b.colorPrimary;
   return (
     <Link
       to="/partidas/$matchId"
       params={{ matchId: m.id }}
-      className={`group block rounded-lg border bg-card p-3.5 transition-colors hover:border-primary/40 ${
+      className={`group block rounded-lg border bg-card p-3.5 transition-colors hover:border-primary/40 border-l-2 ${
         analyzing ? "border-primary/30" : "border-border/60"
       }`}
+      style={accent ? { borderLeftColor: `${accent}55` } : undefined}
     >
       <div className="flex items-center justify-between mb-2.5">
         <span className="text-[10.5px] uppercase tracking-[0.12em] text-muted-foreground font-semibold truncate">{m.event}</span>

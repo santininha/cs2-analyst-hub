@@ -4,7 +4,8 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { PageHeader } from "@/components/PageHeader";
 import { dataSources } from "@/data/mock";
-import { Database, FileSpreadsheet, FileJson, Link as LinkIcon, Construction } from "lucide-react";
+import { useTeams } from "@/contexts/TeamsContext";
+import { Database, FileSpreadsheet, FileJson, Link as LinkIcon, Construction, CheckCircle2, AlertTriangle, Loader2 } from "lucide-react";
 
 export const Route = createFileRoute("/fontes")({
   head: () => ({ meta: [{ title: "Fontes de Dados — CS2 Analyst Hub" }] }),
@@ -17,6 +18,8 @@ function DataSources() {
   return (
     <div className="max-w-4xl mx-auto">
       <PageHeader title="Fontes de Dados" subtitle="Em breve: importe dados reais via API, CSV, JSON ou link de partida." />
+
+      <GridStatusCard />
 
       <Card className="mb-6 bg-accent border-primary/30">
         <CardContent className="p-4 flex items-start gap-3">
@@ -50,3 +53,66 @@ function DataSources() {
     </div>
   );
 }
+
+function GridStatusCard() {
+  const { loading, error, gridCount, matchedCount, lastSync, source, cached } = useTeams();
+  const connected = !error && gridCount > 0;
+  const usingFallback = source === "mock" || matchedCount === 0;
+
+  const statusColor = loading
+    ? "border-border/60 bg-card/40"
+    : connected
+      ? "border-emerald-500/30 bg-emerald-500/5"
+      : "border-amber-500/40 bg-amber-500/5";
+
+  const StatusIcon = loading ? Loader2 : connected ? CheckCircle2 : AlertTriangle;
+  const statusLabel = loading
+    ? "Sincronizando…"
+    : connected
+      ? "GRID conectado"
+      : "GRID indisponível — usando mock";
+
+  return (
+    <Card className={`mb-6 backdrop-blur-md ${statusColor}`}>
+      <CardContent className="p-4">
+        <div className="flex items-start gap-3">
+          <StatusIcon
+            className={`h-5 w-5 mt-0.5 ${
+              loading ? "animate-spin text-muted-foreground" : connected ? "text-emerald-400" : "text-amber-400"
+            }`}
+          />
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-2 flex-wrap">
+              <span className="text-[13px] font-semibold">{statusLabel}</span>
+              <Badge variant="outline" className="text-[10px]">GRID Central Data</Badge>
+              {cached && <Badge variant="secondary" className="text-[10px]">cache</Badge>}
+              {usingFallback && !loading && (
+                <Badge variant="outline" className="text-[10px] border-amber-500/40 text-amber-300">
+                  fallback mock ativo
+                </Badge>
+              )}
+            </div>
+            <div className="mt-2 grid gap-x-6 gap-y-1 text-[12px] text-muted-foreground sm:grid-cols-3">
+              <div>
+                <span className="text-foreground/80 font-semibold tabular-nums">{gridCount}</span> times carregados
+              </div>
+              <div>
+                <span className="text-foreground/80 font-semibold tabular-nums">{matchedCount}</span> enriquecidos
+              </div>
+              <div>
+                Última sync:{" "}
+                <span className="text-foreground/80 font-semibold">
+                  {lastSync ? lastSync.toLocaleTimeString("pt-BR") : "—"}
+                </span>
+              </div>
+            </div>
+            {error && (
+              <div className="mt-2 text-[11px] text-amber-300/90 line-clamp-2">{error}</div>
+            )}
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
