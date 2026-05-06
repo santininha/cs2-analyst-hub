@@ -209,8 +209,8 @@ function SideCard({
     <div className="rounded-xl border border-border/60 bg-card p-4">
       <div className="flex items-center justify-between mb-3">
         <div>
-          <div className="text-[10px] uppercase tracking-[0.12em] text-muted-foreground/80 font-semibold">{eyebrow}</div>
-          <div className="text-[14px] font-semibold flex items-center gap-1.5 mt-0.5">
+          <div className="text-[11px] uppercase tracking-[0.13em] text-muted-foreground font-semibold">{eyebrow}</div>
+          <div className="text-[15px] font-semibold flex items-center gap-1.5 mt-1">
             {icon && <span className="text-primary">{icon}</span>}
             {title}
           </div>
