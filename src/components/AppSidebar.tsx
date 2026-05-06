@@ -40,16 +40,16 @@ export function AppSidebar() {
 
   return (
     <Sidebar collapsible="icon">
-      <SidebarHeader className="border-b border-sidebar-border py-4">
-        <Link to="/" className="flex items-center gap-3 px-2">
-          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary text-primary-foreground shadow-md">
-            <Crosshair className="h-6 w-6" />
+      <SidebarHeader className="border-b border-sidebar-border py-3.5">
+        <Link to="/" className="flex items-center gap-2.5 px-2">
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
+            <Crosshair className="h-4 w-4" />
           </div>
           <div className="flex flex-col leading-tight group-data-[collapsible=icon]:hidden">
-            <span className="text-base font-extrabold tracking-tight">
+            <span className="text-[13px] font-semibold tracking-tight">
               CS2 Analyst Hub
             </span>
-            <span className="text-[11px] uppercase tracking-wider text-sidebar-foreground/60 font-semibold">
+            <span className="text-[10px] uppercase tracking-wider text-sidebar-foreground/50 font-medium">
               por Santininha
             </span>
           </div>
