@@ -86,14 +86,14 @@ function MatchPage() {
       </Card>
 
       {/* Resumo rápido para caster */}
-      <Card className="mb-6 bg-primary text-primary-foreground border-primary">
-        <CardHeader className="pb-3">
-          <CardTitle className="flex items-center gap-2 text-primary-foreground">
-            <Mic className="h-5 w-5" /> Resumo rápido para caster
+      <Card className="mb-5 border-primary/30 bg-primary-soft">
+        <CardHeader className="pb-2">
+          <CardTitle className="flex items-center gap-2 text-primary">
+            <Mic className="h-4 w-4" /> Resumo rápido para caster
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid gap-3 sm:grid-cols-2">
+          <div className="grid gap-2.5 sm:grid-cols-2">
             <SummaryItem label="Time favorito" value={`${summary.favorite.name} (${summary.favorite.winRate}% WR)`} />
             <SummaryItem label="Jogador destaque" value={summary.allStar ? `${summary.allStar.nick} — ${summary.allStar.rating.toFixed(2)}` : "—"} />
             <SummaryItem label={`Mapa forte de ${a.tag}`} value={summary.aBestMap ? `${summary.aBestMap} (${summary.aBest!.winRate}%)` : "—"} />
@@ -101,6 +101,24 @@ function MatchPage() {
             <SummaryItem label={`Ponto fraco de ${a.tag}`} value={summary.aWorstMap ? `${summary.aWorstMap} (${summary.aWorst!.winRate}%)` : "—"} />
             <SummaryItem label={`Ponto fraco de ${b.tag}`} value={summary.bWorstMap ? `${summary.bWorstMap} (${summary.bWorst!.winRate}%)` : "—"} />
           </div>
+        </CardContent>
+      </Card>
+
+      {/* Caster Quick Notes — sempre visível no topo */}
+      <Card className="mb-6 border-dashed">
+        <CardHeader className="pb-2">
+          <CardTitle className="text-[13px] uppercase tracking-wider text-muted-foreground flex items-center gap-2">
+            <Tag className="h-3.5 w-3.5" /> Caster Quick Notes
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <Textarea
+            value={tech}
+            onChange={(e) => setTech(e.target.value)}
+            rows={2}
+            placeholder="Anote insights rápidos para usar ao vivo (ex: jogada de retake favorita, narrativa do confronto…)"
+            className="resize-none text-[13px] bg-background"
+          />
         </CardContent>
       </Card>
 
@@ -124,16 +142,9 @@ function MatchPage() {
       </div>
 
       {/* Roteiros */}
-      <div className="grid gap-6 md:grid-cols-2">
+      <div className="grid gap-5 md:grid-cols-2">
         <Card>
-          <CardHeader><CardTitle className="text-base">Notas técnicas</CardTitle></CardHeader>
-          <CardContent>
-            <Textarea value={tech} onChange={(e) => setTech(e.target.value)} rows={5} placeholder="Anotações técnicas sobre a partida..." />
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader><CardTitle className="text-base flex items-center gap-2"><Tag className="h-4 w-4 text-primary" />Palavras-chave</CardTitle></CardHeader>
+          <CardHeader><CardTitle className="text-[13px] uppercase tracking-wider text-muted-foreground flex items-center gap-2"><Tag className="h-3.5 w-3.5" />Palavras-chave</CardTitle></CardHeader>
           <CardContent>
             <Input value={keywords} onChange={(e) => setKeywords(e.target.value)} placeholder="separadas por vírgula" />
             <div className="flex flex-wrap gap-1 mt-3">
@@ -164,9 +175,9 @@ function MatchPage() {
 
 function SummaryItem({ label, value }: { label: string; value: string }) {
   return (
-    <div className="bg-primary-foreground/10 rounded-md p-3">
-      <div className="text-[11px] uppercase tracking-wide opacity-80">{label}</div>
-      <div className="font-semibold">{value}</div>
+    <div className="bg-card rounded-lg p-3 border border-border/50">
+      <div className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">{label}</div>
+      <div className="font-semibold text-[13px] mt-0.5">{value}</div>
     </div>
   );
 }
