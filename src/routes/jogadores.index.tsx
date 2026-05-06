@@ -65,6 +65,7 @@ function TeamsList() {
                   <div className="font-bold flex items-center gap-2">
                     {t.name}
                     <Badge variant="outline" className="text-[10px]">#{t.worldRank}</Badge>
+                    <DataSourceTag team={t} size="xs" />
                   </div>
                   <div className="text-xs text-muted-foreground">
                     {t.region} • {roster.length} jogadores • Win rate {t.winRate}%
