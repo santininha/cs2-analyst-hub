@@ -111,9 +111,9 @@ function PlayerPage() {
         </TabsContent>
 
         <TabsContent value="t" className="mt-4">
-          <Card className="border-orange-300/40">
+          <Card className="border-side-tr/40">
             <CardHeader>
-              <CardTitle className="text-lg text-orange-600">T Side por mapa</CardTitle>
+              <CardTitle className="text-lg text-side-tr">T Side por mapa</CardTitle>
             </CardHeader>
             <CardContent>
               <MapList stats={mapStats} side="t" />
@@ -124,7 +124,7 @@ function PlayerPage() {
         <TabsContent value="ct" className="mt-4">
           <Card className="border-blue-300/40">
             <CardHeader>
-              <CardTitle className="text-lg text-blue-600">CT Side por mapa</CardTitle>
+              <CardTitle className="text-lg text-side-ct">CT Side por mapa</CardTitle>
             </CardHeader>
             <CardContent>
               <MapList stats={mapStats} side="ct" />
@@ -210,12 +210,12 @@ function MapList({ stats, side }: { stats: PlayerMapStat[]; side: Side }) {
               <div className="grid gap-3 md:grid-cols-2 pt-1">
                 <div className="rounded-md bg-muted/40 p-3 space-y-2">
                   <div className="flex items-center justify-between">
-                    <span className="text-xs font-bold text-blue-600 uppercase">CT</span>
+                    <span className="text-xs font-bold text-side-ct uppercase">CT</span>
                     <span className="font-mono text-sm">{s.ctRating.toFixed(2)}</span>
                   </div>
                   <Progress value={(s.ctRating / 1.6) * 100} className="h-2" />
                   <div className="flex items-center justify-between mt-3">
-                    <span className="text-xs font-bold text-orange-600 uppercase">TR</span>
+                    <span className="text-xs font-bold text-side-tr uppercase">TR</span>
                     <span className="font-mono text-sm">{s.trRating.toFixed(2)}</span>
                   </div>
                   <Progress value={(s.trRating / 1.6) * 100} className="h-2" />
