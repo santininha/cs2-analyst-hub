@@ -71,26 +71,26 @@ function GlossaryPage() {
         </CardContent>
       </Card>
 
-      <div className="grid gap-2.5">
+      <div className="grid gap-2">
         {filtered.map((g) => (
           <Card key={g.id} className="hover:border-primary/40 transition-colors">
-            <CardContent className="p-4 flex items-start gap-3">
+            <CardContent className="p-3.5 flex items-start gap-3">
               <button onClick={() => toggleFav(g.id)} className="mt-0.5 shrink-0">
-                <Star className={`h-5 w-5 ${g.favorite ? "fill-primary text-primary" : "text-muted-foreground/60"}`} />
+                <Star className={`h-4 w-4 ${g.favorite ? "fill-primary text-primary" : "text-muted-foreground/50"}`} />
               </button>
               <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2 mb-1.5 flex-wrap">
-                  <span className="text-[11px] font-bold uppercase tracking-wider text-primary">{g.term}</span>
-                  <Badge variant="outline" className="text-[10px] font-medium">{g.category}</Badge>
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="text-[10px] font-semibold uppercase tracking-wider text-primary">{g.term}</span>
+                  <Badge variant="outline" className="text-[10px] font-medium px-1.5 py-0 h-4">{g.category}</Badge>
                 </div>
-                <p className="text-lg md:text-xl font-bold leading-snug text-foreground">
+                <p className="text-[14px] font-semibold leading-relaxed text-foreground">
                   "{g.phrase}"
                 </p>
               </div>
             </CardContent>
           </Card>
         ))}
-        {filtered.length === 0 && <p className="text-center text-muted-foreground py-10">Nenhuma frase encontrada.</p>}
+        {filtered.length === 0 && <p className="text-center text-muted-foreground py-10 text-[13px]">Nenhuma frase encontrada.</p>}
       </div>
     </div>
   );
