@@ -3,6 +3,7 @@ import { Toaster } from "@/components/ui/sonner";
 import { SidebarProvider, SidebarTrigger, SidebarInset } from "@/components/ui/sidebar";
 import { WorkspaceSidebar } from "@/components/WorkspaceSidebar";
 import { LiveDataBadge } from "@/components/LiveDataBadge";
+import { TeamsProvider } from "@/contexts/TeamsContext";
 
 import appCss from "../styles.css?url";
 
@@ -56,6 +57,7 @@ function RootShell({ children }: { children: React.ReactNode }) {
 
 function RootComponent() {
   return (
+    <TeamsProvider>
     <SidebarProvider
       style={
         {
@@ -89,5 +91,6 @@ function RootComponent() {
       </div>
       <Toaster />
     </SidebarProvider>
+    </TeamsProvider>
   );
 }

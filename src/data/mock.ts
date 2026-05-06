@@ -6,6 +6,11 @@ export type Team = {
   worldRank: number;
   winRate: number;
   logoColor: string;
+  // Enrichment from GRID API (optional — falls back to mock styling)
+  logoUrl?: string;
+  colorPrimary?: string;
+  colorSecondary?: string;
+  gridId?: string;
 };
 
 export type Player = {
