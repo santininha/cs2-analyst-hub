@@ -287,6 +287,34 @@ function DataSourcesPage() {
         />
       </div>
 
+      {/* Map pool */}
+      <section className="mt-8">
+        <div className="mb-3">
+          <span className="text-[11px] uppercase tracking-[0.13em] text-muted-foreground font-semibold">
+            Map pool
+          </span>
+          <h2 className="text-[18px] mt-0.5">Rotação competitiva (Active Duty)</h2>
+        </div>
+        <MapPoolStatusCard />
+        <p className="text-[11px] text-muted-foreground mt-2">
+          Recorte padrão de análise: <span className="text-foreground/90 font-semibold">{DEFAULT_ANALYSIS_WINDOW.label}</span>.
+        </p>
+      </section>
+
+      {/* Team scopes */}
+      <section className="mt-8">
+        <div className="mb-3">
+          <span className="text-[11px] uppercase tracking-[0.13em] text-muted-foreground font-semibold">
+            Escopo de times
+          </span>
+          <h2 className="text-[18px] mt-0.5">Rankings configurados</h2>
+        </div>
+        <div className="grid gap-3 md:grid-cols-2">
+          <ScopeCard scope={TEAM_SCOPES["top30-world"]} icon={Globe2} />
+          <ScopeCard scope={TEAM_SCOPES["top20-sa"]} icon={Trophy} />
+        </div>
+      </section>
+
       {/* Roadmap */}
       <section className="mt-8">
         <div className="mb-3">
@@ -306,6 +334,38 @@ function DataSourcesPage() {
         </div>
       </section>
     </div>
+  );
+}
+
+function ScopeCard({
+  scope,
+  icon: Icon,
+}: {
+  scope: (typeof TEAM_SCOPES)[keyof typeof TEAM_SCOPES];
+  icon: LucideIcon;
+}) {
+  return (
+    <Card className="border-amber-500/25 bg-amber-500/5 backdrop-blur-md">
+      <CardContent className="p-4">
+        <div className="flex items-start gap-3">
+          <div className="h-9 w-9 rounded-md bg-amber-500/10 border border-amber-500/30 flex items-center justify-center shrink-0">
+            <Icon className="h-4 w-4 text-amber-300" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-2 flex-wrap">
+              <span className="text-[13px] font-semibold">{scope.label}</span>
+              <Badge variant="outline" className="text-[9px] uppercase tracking-[0.1em] border-amber-500/40 text-amber-300">
+                ranking externo pendente
+              </Badge>
+            </div>
+            <p className="text-[12px] text-muted-foreground mt-1 leading-relaxed">{scope.description}</p>
+            <p className="text-[11px] text-muted-foreground/80 mt-2">
+              Fonte planejada: <span className="text-foreground/80">{scope.plannedSource}</span>
+            </p>
+          </div>
+        </div>
+      </CardContent>
+    </Card>
   );
 }
 
