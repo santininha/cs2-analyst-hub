@@ -54,7 +54,13 @@ function AnalystDesk() {
           <span className="text-muted-foreground/50">·</span>
           <span>{new Date().toLocaleDateString("pt-BR", { weekday: "long", day: "2-digit", month: "long" })}</span>
           <span className="text-muted-foreground/50">·</span>
-          <span>{upcoming.length} mapeadas · {analyzing.length} em análise · {latestNotes.length} notas</span>
+          <span>
+            {matchesLoading
+              ? "Conectando GRID · carregando partidas…"
+              : `${upcoming.length} próximas · ${live.length} ao vivo · ${analyzing.length} em análise`}
+          </span>
+          <span className="text-muted-foreground/50">·</span>
+          <span className="text-[10px] uppercase tracking-[0.12em]">fonte: {matchesSource}</span>
         </div>
         <div className="flex gap-2">
           <Button variant="outline" asChild size="sm">
@@ -67,7 +73,7 @@ function AnalystDesk() {
       </div>
 
       {/* Featured next match */}
-      {nextMatch && <FeaturedMatch matchId={nextMatch.id} />}
+      {nextMatch && <FeaturedMatch match={nextMatch} />}
 
       {/* Two-column workspace */}
       <div className="mt-8 grid gap-6 lg:grid-cols-[1fr_320px]">
@@ -80,9 +86,24 @@ function AnalystDesk() {
             action={<Link to="/partidas" className="text-[12px] text-muted-foreground hover:text-foreground">Ver tudo →</Link>}
           >
             <div className="grid gap-3 md:grid-cols-2">
-              {upcoming.map((m) => <MatchRow key={m.id} matchId={m.id} />)}
+              {matchesLoading && upcoming.length === 0 && (
+                <div className="text-[12px] text-muted-foreground italic col-span-full">Conectando GRID…</div>
+              )}
+              {upcoming.slice(0, 6).map((m) => <MatchRow key={m.id} match={m} />)}
             </div>
           </Section>
+
+          {live.length > 0 && (
+            <Section
+              eyebrow="Ao vivo agora"
+              title="Live"
+              icon={<Flame className="h-4 w-4" />}
+            >
+              <div className="grid gap-3 md:grid-cols-2">
+                {live.map((m) => <MatchRow key={m.id} match={m} />)}
+              </div>
+            </Section>
+          )}
 
           <Section
             eyebrow="Workspace ativo"
@@ -90,7 +111,10 @@ function AnalystDesk() {
             icon={<Swords className="h-4 w-4" />}
           >
             <div className="grid gap-3 md:grid-cols-2">
-              {analyzing.map((m) => <MatchRow key={m.id} matchId={m.id} analyzing />)}
+              {analyzing.map((m) => {
+                const enriched = matchToEnrichedFallback(m);
+                return enriched ? <MatchRow key={m.id} match={enriched} analyzing /> : null;
+              })}
             </div>
           </Section>
 
@@ -100,7 +124,7 @@ function AnalystDesk() {
             icon={<TrendingUp className="h-4 w-4" />}
           >
             <div className="grid gap-3 md:grid-cols-2">
-              {recent.map((m) => <MatchRow key={m.id} matchId={m.id} />)}
+              {recent.map((m) => <MatchRow key={m.id} match={m} />)}
             </div>
           </Section>
         </div>
