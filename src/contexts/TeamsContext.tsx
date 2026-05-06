@@ -24,19 +24,17 @@ function mergeTeams(base: Team[], grid: GridTeam[]): { merged: Team[]; matched: 
   const gridByName = new Map<string, GridTeam>();
   for (const g of grid) gridByName.set(norm(g.name), g);
   let matched = 0;
-  const merged = base.map((t) => {
+  for (const t of base) {
     const g = gridByName.get(norm(t.name)) ?? gridByName.get(norm(t.tag));
-    if (!g) return t;
+    if (!g) continue;
     matched++;
-    return {
-      ...t,
-      gridId: g.id,
-      logoUrl: g.logoUrl ?? t.logoUrl,
-      colorPrimary: g.colorPrimary ?? t.colorPrimary,
-      colorSecondary: g.colorSecondary ?? t.colorSecondary,
-    };
-  });
-  return { merged, matched };
+    // Mutate in place so all `getTeam(...)` callers see enrichment without refactor
+    t.gridId = g.id;
+    if (g.logoUrl) t.logoUrl = g.logoUrl;
+    if (g.colorPrimary) t.colorPrimary = g.colorPrimary;
+    if (g.colorSecondary) t.colorSecondary = g.colorSecondary;
+  }
+  return { merged: [...base], matched };
 }
 
 export function TeamsProvider({ children }: { children: ReactNode }) {
