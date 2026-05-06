@@ -6,10 +6,10 @@ import { TeamBadge } from "@/components/TeamBadge";
 import {
   matches,
   getTeam,
-  teams,
   players,
   notes,
 } from "@/data/mock";
+import { useTeams, useRoster } from "@/contexts/TeamsContext";
 import {
   Swords,
   Calendar,
@@ -19,6 +19,7 @@ import {
   StickyNote,
   Flame,
   Mic,
+  Users,
 } from "lucide-react";
 
 export const Route = createFileRoute("/")({
@@ -32,10 +33,11 @@ export const Route = createFileRoute("/")({
 });
 
 function AnalystDesk() {
+  const { teams: liveTeams } = useTeams();
   const upcoming = matches.filter((m) => m.status === "upcoming");
   const analyzing = matches.filter((m) => m.preNotes || m.techNotes || m.keywords?.length);
   const recent = matches.filter((m) => m.status === "finished").slice(0, 3);
-  const trendingTeams = [...teams].sort((a, b) => a.worldRank - b.worldRank).slice(0, 5);
+  const trendingTeams = [...liveTeams].sort((a, b) => a.worldRank - b.worldRank).slice(0, 5);
   const topPlayers = [...players].sort((a, b) => b.rating - a.rating).slice(0, 4);
   const latestNotes = [...notes].sort((a, b) => (a.date < b.date ? 1 : -1)).slice(0, 3);
   const nextMatch = upcoming[0];
@@ -229,6 +231,8 @@ function FeaturedMatch({ matchId }: { matchId: string }) {
   const m = matches.find((x) => x.id === matchId)!;
   const a = getTeam(m.teamAId)!;
   const b = getTeam(m.teamBId)!;
+  const rosterA = useRoster(a.id);
+  const rosterB = useRoster(b.id);
   return (
     <Card className="overflow-hidden border-border/60">
       <div className="grid md:grid-cols-[1fr_auto] items-stretch">
@@ -264,6 +268,12 @@ function FeaturedMatch({ matchId }: { matchId: string }) {
               {m.keywords.map((k) => (
                 <Badge key={k} variant="secondary" className="text-[10px]">{k}</Badge>
               ))}
+            </div>
+          )}
+          {(rosterA.length > 0 || rosterB.length > 0) && (
+            <div className="mt-5 grid gap-4 sm:grid-cols-2">
+              <RosterStrip team={a} players={rosterA} />
+              <RosterStrip team={b} players={rosterB} />
             </div>
           )}
         </div>
@@ -329,5 +339,42 @@ function MatchRow({ matchId, analyzing }: { matchId: string; analyzing?: boolean
         </span>
       </div>
     </Link>
+  );
+}
+
+function RosterStrip({
+  team,
+  players,
+}: {
+  team: import("@/data/mock").Team;
+  players: { id: string; nickname: string }[];
+}) {
+  const accent = team.colorPrimary ?? undefined;
+  return (
+    <div
+      className="rounded-lg border border-border/50 bg-card/40 backdrop-blur-sm p-3 border-l-2"
+      style={accent ? { borderLeftColor: `${accent}88` } : undefined}
+    >
+      <div className="flex items-center gap-2 mb-2">
+        <Users className="h-3 w-3 text-muted-foreground" />
+        <span className="text-[10.5px] uppercase tracking-[0.12em] text-muted-foreground font-semibold truncate">
+          Lineup · {team.name}
+        </span>
+      </div>
+      {players.length === 0 ? (
+        <div className="text-[12px] text-muted-foreground/70 italic">Lineup indisponível</div>
+      ) : (
+        <ul className="flex flex-wrap gap-1.5">
+          {players.slice(0, 8).map((p) => (
+            <li
+              key={p.id}
+              className="text-[12px] font-medium px-2 py-0.5 rounded-md bg-muted/60 border border-border/50"
+            >
+              {p.nickname}
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
   );
 }

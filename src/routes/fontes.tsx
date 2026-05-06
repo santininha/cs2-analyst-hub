@@ -55,7 +55,7 @@ function DataSources() {
 }
 
 function GridStatusCard() {
-  const { loading, error, gridCount, matchedCount, lastSync, source, cached } = useTeams();
+  const { loading, error, gridCount, matchedCount, rosterCount, lastSync, source, cached } = useTeams();
   const connected = !error && gridCount > 0;
   const usingFallback = source === "mock" || matchedCount === 0;
 
@@ -92,12 +92,15 @@ function GridStatusCard() {
                 </Badge>
               )}
             </div>
-            <div className="mt-2 grid gap-x-6 gap-y-1 text-[12px] text-muted-foreground sm:grid-cols-3">
+            <div className="mt-2 grid gap-x-6 gap-y-1 text-[12px] text-muted-foreground sm:grid-cols-2 lg:grid-cols-4">
               <div>
                 <span className="text-foreground/80 font-semibold tabular-nums">{gridCount}</span> times carregados
               </div>
               <div>
                 <span className="text-foreground/80 font-semibold tabular-nums">{matchedCount}</span> enriquecidos
+              </div>
+              <div>
+                <span className="text-foreground/80 font-semibold tabular-nums">{rosterCount}</span> jogadores
               </div>
               <div>
                 Última sync:{" "}
