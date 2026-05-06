@@ -283,12 +283,12 @@ function MapBars({ ct, tr }: { ct: number; tr: number }) {
   return (
     <div className="space-y-1">
       <div className="flex items-center gap-2">
-        <span className="text-[10px] w-6 text-blue-600 font-bold">CT</span>
+        <span className="text-[10px] w-6 text-side-ct font-bold">CT</span>
         <Progress value={ct} className="h-2" />
         <span className="text-xs font-mono w-9">{ct}%</span>
       </div>
       <div className="flex items-center gap-2">
-        <span className="text-[10px] w-6 text-orange-600 font-bold">TR</span>
+        <span className="text-[10px] w-6 text-side-tr font-bold">TR</span>
         <Progress value={tr} className="h-2" />
         <span className="text-xs font-mono w-9">{tr}%</span>
       </div>
@@ -323,11 +323,11 @@ function MapDetail({ team, stat, mapId }: { team: any; stat: any; mapId: string 
           <div className="text-[11px] uppercase tracking-wide text-muted-foreground font-semibold">Win rate</div>
         </div>
         <div className="rounded-md bg-background p-3">
-          <div className="text-2xl font-extrabold text-blue-600">{stat.ctWinRate}%</div>
+          <div className="text-2xl font-extrabold text-side-ct">{stat.ctWinRate}%</div>
           <div className="text-[11px] uppercase tracking-wide text-muted-foreground font-semibold">CT</div>
         </div>
         <div className="rounded-md bg-background p-3">
-          <div className="text-2xl font-extrabold text-orange-600">{stat.trWinRate}%</div>
+          <div className="text-2xl font-extrabold text-side-tr">{stat.trWinRate}%</div>
           <div className="text-[11px] uppercase tracking-wide text-muted-foreground font-semibold">TR</div>
         </div>
       </div>

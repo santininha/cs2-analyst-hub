@@ -70,12 +70,12 @@ function MapsPage() {
               <CardContent className="space-y-3">
                 <div>
                   <div className="flex items-center gap-2 text-xs">
-                    <span className="text-blue-600 font-bold w-6">CT</span>
+                    <span className="text-side-ct font-bold w-6">CT</span>
                     <Progress value={m.ctWinRate} className="h-2" />
                     <span className="font-mono w-9">{m.ctWinRate}%</span>
                   </div>
                   <div className="flex items-center gap-2 text-xs mt-1">
-                    <span className="text-orange-600 font-bold w-6">TR</span>
+                    <span className="text-side-tr font-bold w-6">TR</span>
                     <Progress value={m.trWinRate} className="h-2" />
                     <span className="font-mono w-9">{m.trWinRate}%</span>
                   </div>
