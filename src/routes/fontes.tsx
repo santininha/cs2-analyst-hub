@@ -19,6 +19,8 @@ function DataSources() {
     <div className="max-w-4xl mx-auto">
       <PageHeader title="Fontes de Dados" subtitle="Em breve: importe dados reais via API, CSV, JSON ou link de partida." />
 
+      <GridStatusCard />
+
       <Card className="mb-6 bg-accent border-primary/30">
         <CardContent className="p-4 flex items-start gap-3">
           <Construction className="h-5 w-5 text-primary mt-0.5" />
