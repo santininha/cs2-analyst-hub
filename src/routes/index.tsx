@@ -341,3 +341,40 @@ function MatchRow({ matchId, analyzing }: { matchId: string; analyzing?: boolean
     </Link>
   );
 }
+
+function RosterStrip({
+  team,
+  players,
+}: {
+  team: import("@/data/mock").Team;
+  players: { id: string; nickname: string }[];
+}) {
+  const accent = team.colorPrimary ?? undefined;
+  return (
+    <div
+      className="rounded-lg border border-border/50 bg-card/40 backdrop-blur-sm p-3 border-l-2"
+      style={accent ? { borderLeftColor: `${accent}88` } : undefined}
+    >
+      <div className="flex items-center gap-2 mb-2">
+        <Users className="h-3 w-3 text-muted-foreground" />
+        <span className="text-[10.5px] uppercase tracking-[0.12em] text-muted-foreground font-semibold truncate">
+          Lineup · {team.name}
+        </span>
+      </div>
+      {players.length === 0 ? (
+        <div className="text-[12px] text-muted-foreground/70 italic">Lineup indisponível</div>
+      ) : (
+        <ul className="flex flex-wrap gap-1.5">
+          {players.slice(0, 8).map((p) => (
+            <li
+              key={p.id}
+              className="text-[12px] font-medium px-2 py-0.5 rounded-md bg-muted/60 border border-border/50"
+            >
+              {p.nickname}
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+}
