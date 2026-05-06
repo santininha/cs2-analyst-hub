@@ -110,7 +110,7 @@ function AnalystDesk() {
                   <TeamBadge team={t} size="sm" />
                   <div className="flex-1 min-w-0">
                     <div className="text-[13px] font-semibold truncate">{t.name}</div>
-                    <div className="text-[11px] text-muted-foreground">{t.region} · {t.winRate}% WR</div>
+                    <div className="text-[12px] text-muted-foreground">{t.region} · {t.winRate}% WR</div>
                   </div>
                 </li>
               ))}
@@ -130,7 +130,7 @@ function AnalystDesk() {
                     >
                       <div className="min-w-0">
                         <div className="text-[13px] font-semibold truncate">{p.nick}</div>
-                        <div className="text-[11px] text-muted-foreground truncate">{team?.tag} · {p.role}</div>
+                        <div className="text-[12px] text-muted-foreground truncate">{team?.tag} · {p.role}</div>
                       </div>
                       <Badge variant="outline" className="border-primary/30 text-primary text-[11px] tabular-nums">
                         {p.rating.toFixed(2)}
@@ -150,7 +150,7 @@ function AnalystDesk() {
                     <div className="text-[13px] font-semibold leading-snug group-hover:text-primary transition-colors">
                       {n.title}
                     </div>
-                    <div className="text-[11px] text-muted-foreground mt-0.5 line-clamp-2 leading-relaxed">
+                    <div className="text-[12px] text-muted-foreground mt-0.5 line-clamp-2 leading-relaxed">
                       {n.content}
                     </div>
                   </Link>
@@ -238,7 +238,7 @@ function FeaturedMatch({ matchId }: { matchId: string }) {
               <TeamBadge team={a} size="lg" />
               <div>
                 <div className="font-semibold text-[16px] leading-tight">{a.name}</div>
-                <div className="text-[11px] text-muted-foreground">#{a.worldRank} · {a.winRate}%</div>
+                <div className="text-[12px] text-muted-foreground">#{a.worldRank} · {a.winRate}%</div>
               </div>
             </div>
             <span className="text-2xl font-bold text-muted-foreground">vs</span>
@@ -246,7 +246,7 @@ function FeaturedMatch({ matchId }: { matchId: string }) {
               <TeamBadge team={b} size="lg" />
               <div>
                 <div className="font-semibold text-[16px] leading-tight">{b.name}</div>
-                <div className="text-[11px] text-muted-foreground">#{b.worldRank} · {b.winRate}%</div>
+                <div className="text-[12px] text-muted-foreground">#{b.worldRank} · {b.winRate}%</div>
               </div>
             </div>
           </div>
@@ -265,11 +265,11 @@ function FeaturedMatch({ matchId }: { matchId: string }) {
         </div>
         <div className="bg-muted/40 border-t md:border-t-0 md:border-l border-border/60 p-5 md:p-6 flex flex-col justify-between gap-4 md:w-64">
           <div>
-            <div className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">Início</div>
+            <div className="text-[10.5px] uppercase tracking-[0.12em] text-muted-foreground font-semibold">Início</div>
             <div className="text-[14px] font-semibold mt-0.5">
               {new Date(m.date).toLocaleString("pt-BR", { weekday: "short", day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit" })}
             </div>
-            <div className="text-[11px] text-muted-foreground mt-1">{m.format} · {m.maps.length} mapas previstos</div>
+            <div className="text-[12px] text-muted-foreground mt-1">{m.format} · {m.maps.length} mapas previstos</div>
           </div>
           <Button asChild size="sm" className="w-full">
             <Link to="/partidas/$matchId" params={{ matchId: m.id }}>
@@ -295,7 +295,7 @@ function MatchRow({ matchId, analyzing }: { matchId: string; analyzing?: boolean
       }`}
     >
       <div className="flex items-center justify-between mb-2.5">
-        <span className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold truncate">{m.event}</span>
+        <span className="text-[10.5px] uppercase tracking-[0.12em] text-muted-foreground font-semibold truncate">{m.event}</span>
         <Badge
           variant={m.status === "upcoming" ? "default" : m.status === "live" ? "destructive" : "secondary"}
           className="text-[10px]"
@@ -316,7 +316,7 @@ function MatchRow({ matchId, analyzing }: { matchId: string; analyzing?: boolean
           <TeamBadge team={b} size="sm" />
         </div>
       </div>
-      <div className="text-[11px] text-muted-foreground mt-2.5 flex items-center justify-between">
+      <div className="text-[12px] text-muted-foreground mt-2.5 flex items-center justify-between">
         <span>{new Date(m.date).toLocaleString("pt-BR", { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit" })}</span>
         <span className="opacity-0 group-hover:opacity-100 transition-opacity text-primary font-semibold inline-flex items-center">
           Abrir <ArrowRight className="h-3 w-3 ml-1" />
