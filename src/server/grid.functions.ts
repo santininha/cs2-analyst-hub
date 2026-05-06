@@ -46,27 +46,15 @@ function aliasFor(i: number) {
 
 async function findTeamsByNames(apiKey: string, names: string[]): Promise<GridTeam[]> {
   if (!names.length) return [];
-  const fragments = names
+  const varDefs = names.map((_, i) => `$n${i}: String!`).join(", ");
+  const body = names
     .map(
       (_, i) => `${aliasFor(i)}: teams(first: 5, filter: { titleId: ${CS2_TITLE_ID}, name: { equals: $n${i} } }) {
         edges { node { id name nameShortened logoUrl colorPrimary colorSecondary } }
       }`,
     )
     .join("\n");
-  const args = names.map((_, i) => `$n${i}: StringFilter`).join(", ").replace(/StringFilter/g, "String");
-  // Note: we want String scalars passed into StringFilter.equals — use String args
-  const varDefs = names.map((_, i) => `$n${i}: String!`).join(", ");
-  const query = `query Resolve(${varDefs}) {
-    ${names
-      .map(
-        (_, i) => `${aliasFor(i)}: teams(first: 5, filter: { titleId: ${CS2_TITLE_ID}, name: { equals: $n${i} } }) {
-          edges { node { id name nameShortened logoUrl colorPrimary colorSecondary } }
-        }`,
-      )
-      .join("\n")}
-  }`;
-  void fragments;
-  void args;
+  const query = `query Resolve(${varDefs}) {\n${body}\n}`;
   const variables: Record<string, string> = {};
   names.forEach((n, i) => (variables[`n${i}`] = n));
   const data = await gql<Record<string, { edges: { node: GridTeam }[] }>>(apiKey, query, variables);
