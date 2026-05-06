@@ -60,22 +60,22 @@ function PlayerPage() {
         </Link>
       </Button>
 
-      <Card className="mb-6">
-        <CardContent className="p-6 flex items-center gap-5">
+      <Card className="mb-5">
+        <CardContent className="p-5 flex items-center gap-4">
           <TeamBadge team={team} size="lg" />
           <div className="flex-1">
-            <div className="text-4xl font-extrabold tracking-tight">{p.nick}</div>
-            <div className="text-base text-muted-foreground mt-1">
+            <div className="text-2xl font-bold tracking-tight">{p.nick}</div>
+            <div className="text-[13px] text-muted-foreground mt-0.5">
               {p.realName} • {p.role} • {team.name}
             </div>
           </div>
-          <Badge className="text-lg px-4 py-2 bg-primary text-primary-foreground font-bold">
+          <Badge className="text-sm px-3 py-1.5 bg-primary text-primary-foreground font-semibold">
             Rating {p.rating.toFixed(2)}
           </Badge>
         </CardContent>
       </Card>
 
-      <div className="grid gap-4 md:grid-cols-4 mb-6">
+      <div className="grid gap-3 md:grid-cols-4 mb-5">
         <BigStat label="K/D" value={p.kd.toFixed(2)} />
         <BigStat label="HS%" value={`${p.hsPct}%`} />
         <BigStat label="ADR" value={String(p.adr)} />
@@ -83,14 +83,14 @@ function PlayerPage() {
       </div>
 
       <Tabs defaultValue="all" className="mb-6">
-        <TabsList className="h-11">
-          <TabsTrigger value="all" className="text-base font-semibold px-5">
-            Geral
+        <TabsList className="h-10">
+          <TabsTrigger value="all" className="text-[13px] font-medium px-4">
+            Visão Geral
           </TabsTrigger>
-          <TabsTrigger value="t" className="text-base font-semibold px-5">
+          <TabsTrigger value="t" className="text-[13px] font-medium px-4">
             T Side
           </TabsTrigger>
-          <TabsTrigger value="ct" className="text-base font-semibold px-5">
+          <TabsTrigger value="ct" className="text-[13px] font-medium px-4">
             CT Side
           </TabsTrigger>
         </TabsList>
@@ -245,12 +245,12 @@ function BigStat({
   highlight?: boolean;
 }) {
   return (
-    <Card className={highlight ? "border-primary border-2" : ""}>
-      <CardContent className="p-5 text-center">
-        <div className={`text-4xl font-extrabold ${highlight ? "text-primary" : ""}`}>
+    <Card className={highlight ? "border-primary/40" : ""}>
+      <CardContent className="p-4 text-center">
+        <div className={`text-2xl font-bold ${highlight ? "text-primary" : ""}`}>
           {value}
         </div>
-        <div className="text-xs text-muted-foreground uppercase tracking-wider font-semibold mt-1">
+        <div className="text-[10px] text-muted-foreground uppercase tracking-wider font-semibold mt-1">
           {label}
         </div>
       </CardContent>
