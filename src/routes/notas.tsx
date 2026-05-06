@@ -79,7 +79,7 @@ function NotesPage() {
               <SelectTrigger><SelectValue placeholder="Vincular mapa" /></SelectTrigger>
               <SelectContent>
                 <SelectItem value={NONE}>— nenhum —</SelectItem>
-                {csmaps.map((m) => <SelectItem key={m.id} value={m.id}>{m.name}</SelectItem>)}
+                {csmaps.filter((m) => m.active !== false).map((m) => <SelectItem key={m.id} value={m.id}>{m.name}</SelectItem>)}
               </SelectContent>
             </Select>
             <Select value={draft.linkedMatchId ?? NONE} onValueChange={(v) => setDraft({ ...draft, linkedMatchId: v === NONE ? undefined : v })}>
