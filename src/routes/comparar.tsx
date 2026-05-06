@@ -1,14 +1,16 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState, useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { PageHeader } from "@/components/PageHeader";
 import { TeamBadge } from "@/components/TeamBadge";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
+import { Button } from "@/components/ui/button";
 import { teams, getTeam, getTeamPlayers, getTeamMapStats, getTeamMapHistory, maps, matches } from "@/data/mock";
-import { Mic, TrendingUp, TrendingDown } from "lucide-react";
+import { Mic, TrendingUp, TrendingDown, Check, ChevronsUpDown } from "lucide-react";
 
 export const Route = createFileRoute("/comparar")({
   head: () => ({
