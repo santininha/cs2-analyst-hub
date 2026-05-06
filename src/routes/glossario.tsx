@@ -71,24 +71,26 @@ function GlossaryPage() {
         </CardContent>
       </Card>
 
-      <div className="grid gap-2">
+      <div className="grid gap-3">
         {filtered.map((g) => (
-          <Card key={g.id}>
-            <CardContent className="p-4 flex items-start gap-3">
-              <button onClick={() => toggleFav(g.id)} className="mt-0.5">
-                <Star className={`h-5 w-5 ${g.favorite ? "fill-primary text-primary" : "text-muted-foreground"}`} />
+          <Card key={g.id} className="hover:shadow-md transition-shadow">
+            <CardContent className="p-5 flex items-start gap-4">
+              <button onClick={() => toggleFav(g.id)} className="mt-1 shrink-0">
+                <Star className={`h-6 w-6 ${g.favorite ? "fill-primary text-primary" : "text-muted-foreground"}`} />
               </button>
-              <div className="flex-1">
-                <div className="flex items-center gap-2 mb-1">
-                  <span className="font-bold">{g.term}</span>
-                  <Badge variant="outline" className="text-[10px]">{g.category}</Badge>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2 mb-2 flex-wrap">
+                  <span className="text-lg font-extrabold uppercase tracking-wide text-primary">{g.term}</span>
+                  <Badge variant="outline" className="text-[11px] font-semibold">{g.category}</Badge>
                 </div>
-                <p className="text-sm italic text-muted-foreground">"{g.phrase}"</p>
+                <p className="text-xl md:text-2xl font-bold leading-snug text-foreground">
+                  "{g.phrase}"
+                </p>
               </div>
             </CardContent>
           </Card>
         ))}
-        {filtered.length === 0 && <p className="text-center text-muted-foreground py-8 text-sm">Nenhuma frase encontrada.</p>}
+        {filtered.length === 0 && <p className="text-center text-muted-foreground py-10">Nenhuma frase encontrada.</p>}
       </div>
     </div>
   );
