@@ -34,10 +34,11 @@ export const Route = createFileRoute("/")({
 });
 
 function AnalystDesk() {
+  const { teams: liveTeams } = useTeams();
   const upcoming = matches.filter((m) => m.status === "upcoming");
   const analyzing = matches.filter((m) => m.preNotes || m.techNotes || m.keywords?.length);
   const recent = matches.filter((m) => m.status === "finished").slice(0, 3);
-  const trendingTeams = [...teams].sort((a, b) => a.worldRank - b.worldRank).slice(0, 5);
+  const trendingTeams = [...liveTeams].sort((a, b) => a.worldRank - b.worldRank).slice(0, 5);
   const topPlayers = [...players].sort((a, b) => b.rating - a.rating).slice(0, 4);
   const latestNotes = [...notes].sort((a, b) => (a.date < b.date ? 1 : -1)).slice(0, 3);
   const nextMatch = upcoming[0];
