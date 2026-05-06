@@ -3,6 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { TeamBadge } from "@/components/TeamBadge";
+import { DataSourceTag } from "@/components/DataSourceTag";
 import {
   matches,
   getTeam,
@@ -115,7 +116,10 @@ function AnalystDesk() {
                   <span className="text-[11px] font-semibold text-muted-foreground tabular-nums w-5">#{t.worldRank}</span>
                   <TeamBadge team={t} size="sm" />
                   <div className="flex-1 min-w-0">
-                    <div className="text-[13px] font-semibold truncate">{t.name}</div>
+                    <div className="text-[13px] font-semibold truncate flex items-center gap-1.5">
+                      <span className="truncate">{t.name}</span>
+                      <DataSourceTag team={t} size="xs" />
+                    </div>
                     <div className="text-[12px] text-muted-foreground">{t.region} · {t.winRate}% WR</div>
                   </div>
                 </li>
@@ -245,7 +249,10 @@ function FeaturedMatch({ matchId }: { matchId: string }) {
             <div className="flex items-center gap-3">
               <TeamBadge team={a} size="lg" />
               <div>
-                <div className="font-semibold text-[16px] leading-tight">{a.name}</div>
+                <div className="font-semibold text-[16px] leading-tight flex items-center gap-1.5">
+                  {a.name}
+                  <DataSourceTag team={a} size="xs" />
+                </div>
                 <div className="text-[12px] text-muted-foreground">#{a.worldRank} · {a.winRate}%</div>
               </div>
             </div>
@@ -253,7 +260,10 @@ function FeaturedMatch({ matchId }: { matchId: string }) {
             <div className="flex items-center gap-3">
               <TeamBadge team={b} size="lg" />
               <div>
-                <div className="font-semibold text-[16px] leading-tight">{b.name}</div>
+                <div className="font-semibold text-[16px] leading-tight flex items-center gap-1.5">
+                  {b.name}
+                  <DataSourceTag team={b} size="xs" />
+                </div>
                 <div className="text-[12px] text-muted-foreground">#{b.worldRank} · {b.winRate}%</div>
               </div>
             </div>
@@ -310,8 +320,17 @@ function MatchRow({ matchId, analyzing }: { matchId: string; analyzing?: boolean
       }`}
       style={accent ? { borderLeftColor: `${accent}55` } : undefined}
     >
-      <div className="flex items-center justify-between mb-2.5">
-        <span className="text-[10.5px] uppercase tracking-[0.12em] text-muted-foreground font-semibold truncate">{m.event}</span>
+      <div className="flex items-center justify-between mb-2.5 gap-2">
+        <span className="text-[10.5px] uppercase tracking-[0.12em] text-muted-foreground font-semibold truncate flex-1">{m.event}</span>
+        {(a.gridId || b.gridId) && (
+          <span
+            title="Times com dados reais GRID"
+            className="text-[9px] uppercase tracking-[0.1em] font-semibold px-1.5 py-[1.5px] rounded bg-emerald-500/10 text-emerald-300/90 border border-emerald-500/25 inline-flex items-center gap-1"
+          >
+            <span className="h-1 w-1 rounded-full bg-emerald-400" />
+            Dados reais
+          </span>
+        )}
         <Badge
           variant={m.status === "upcoming" ? "default" : m.status === "live" ? "destructive" : "secondary"}
           className="text-[10px]"

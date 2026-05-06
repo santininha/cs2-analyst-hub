@@ -54,10 +54,14 @@ function DataSources() {
   );
 }
 
+const GRID_ENDPOINT = "https://api-op.grid.gg/central-data/graphql";
+
 function GridStatusCard() {
-  const { loading, error, gridCount, matchedCount, rosterCount, lastSync, source, cached } = useTeams();
+  const { loading, error, gridCount, matchedCount, rosterCount, lastSync, source, cached, teams } = useTeams();
   const connected = !error && gridCount > 0;
   const usingFallback = source === "mock" || matchedCount === 0;
+  const enrichedTeams = teams.filter((t) => t.gridId);
+  const fallbackTeams = teams.filter((t) => !t.gridId);
 
   const statusColor = loading
     ? "border-border/60 bg-card/40"
@@ -109,6 +113,52 @@ function GridStatusCard() {
                 </span>
               </div>
             </div>
+
+            <div className="mt-3 rounded-md border border-border/50 bg-background/40 px-3 py-2 text-[11px] font-mono text-muted-foreground/90 break-all">
+              <span className="text-muted-foreground/60">endpoint · </span>
+              {GRID_ENDPOINT}
+              <span className="ml-2 text-muted-foreground/60">· auth: x-api-key (oculta)</span>
+            </div>
+
+            {(enrichedTeams.length > 0 || fallbackTeams.length > 0) && (
+              <div className="mt-3 grid gap-2 sm:grid-cols-2">
+                <div>
+                  <div className="text-[10.5px] uppercase tracking-[0.12em] text-muted-foreground font-semibold mb-1.5">
+                    Times reais ({enrichedTeams.length})
+                  </div>
+                  <div className="flex flex-wrap gap-1">
+                    {enrichedTeams.map((t) => (
+                      <Badge
+                        key={t.id}
+                        variant="outline"
+                        className="text-[10px] border-emerald-500/30 bg-emerald-500/5 text-emerald-200/90"
+                      >
+                        {t.name}
+                      </Badge>
+                    ))}
+                    {enrichedTeams.length === 0 && (
+                      <span className="text-[11px] text-muted-foreground italic">nenhum</span>
+                    )}
+                  </div>
+                </div>
+                <div>
+                  <div className="text-[10.5px] uppercase tracking-[0.12em] text-muted-foreground font-semibold mb-1.5">
+                    Mock fallback ({fallbackTeams.length})
+                  </div>
+                  <div className="flex flex-wrap gap-1">
+                    {fallbackTeams.map((t) => (
+                      <Badge key={t.id} variant="outline" className="text-[10px]">
+                        {t.name}
+                      </Badge>
+                    ))}
+                    {fallbackTeams.length === 0 && (
+                      <span className="text-[11px] text-muted-foreground italic">—</span>
+                    )}
+                  </div>
+                </div>
+              </div>
+            )}
+
             {error && (
               <div className="mt-2 text-[11px] text-amber-300/90 line-clamp-2">{error}</div>
             )}

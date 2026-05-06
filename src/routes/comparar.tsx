@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { PageHeader } from "@/components/PageHeader";
 import { TeamBadge } from "@/components/TeamBadge";
+import { DataSourceTag } from "@/components/DataSourceTag";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
@@ -267,7 +268,10 @@ function TeamHeader({ team, align }: { team: any; align: "left" | "right" }) {
     <div className={`flex items-center gap-3 ${align === "right" ? "justify-end" : ""}`}>
       {align === "left" && <TeamBadge team={team} size="lg" />}
       <div className={align === "right" ? "text-right" : ""}>
-        <div className="text-xl font-bold">{team.name}</div>
+        <div className={`text-xl font-bold flex items-center gap-2 ${align === "right" ? "justify-end" : ""}`}>
+          {team.name}
+          <DataSourceTag team={team} size="xs" />
+        </div>
         <div className="text-xs text-muted-foreground">#{team.worldRank} mundo • {team.winRate}% win rate</div>
       </div>
       {align === "right" && <TeamBadge team={team} size="lg" />}
