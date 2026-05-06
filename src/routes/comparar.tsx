@@ -284,12 +284,12 @@ function MapBars({ ct, tr }: { ct: number; tr: number }) {
     <div className="space-y-1">
       <div className="flex items-center gap-2">
         <span className="text-[10px] w-6 text-side-ct font-bold">CT</span>
-        <Progress value={ct} className="h-2" />
+        <Progress value={ct} className="h-2 bg-side-ct/15" indicatorClassName="bg-side-ct" />
         <span className="text-xs font-mono w-9">{ct}%</span>
       </div>
       <div className="flex items-center gap-2">
         <span className="text-[10px] w-6 text-side-tr font-bold">TR</span>
-        <Progress value={tr} className="h-2" />
+        <Progress value={tr} className="h-2 bg-side-tr/15" indicatorClassName="bg-side-tr" />
         <span className="text-xs font-mono w-9">{tr}%</span>
       </div>
     </div>
