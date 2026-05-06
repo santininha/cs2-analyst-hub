@@ -34,7 +34,7 @@ function PlayerPage() {
 
   return (
     <div className="max-w-5xl mx-auto">
-      <Button variant="ghost" size="sm" asChild className="mb-3"><Link to="/jogadores"><ArrowLeft className="h-4 w-4 mr-1" />Jogadores</Link></Button>
+      <Button variant="ghost" size="sm" asChild className="mb-3"><Link to="/jogadores"><ArrowLeft className="h-4 w-4 mr-1" />Times & Jogadores</Link></Button>
 
       <Card className="mb-6">
         <CardContent className="p-6 flex items-center gap-4">

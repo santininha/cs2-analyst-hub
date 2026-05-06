@@ -26,7 +26,7 @@ const items = [
   { title: "Dashboard", url: "/", icon: LayoutDashboard },
   { title: "Comparar Times", url: "/comparar", icon: Swords, highlight: true },
   { title: "Partidas", url: "/partidas", icon: Calendar },
-  { title: "Jogadores", url: "/jogadores", icon: Users },
+  { title: "Times & Jogadores", url: "/jogadores", icon: Users },
   { title: "Mapas", url: "/mapas", icon: MapIcon },
   { title: "Glossário", url: "/glossario", icon: BookOpen },
   { title: "Notas", url: "/notas", icon: StickyNote },
