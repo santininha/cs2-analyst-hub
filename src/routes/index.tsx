@@ -270,6 +270,12 @@ function FeaturedMatch({ matchId }: { matchId: string }) {
               ))}
             </div>
           )}
+          {(rosterA.length > 0 || rosterB.length > 0) && (
+            <div className="mt-5 grid gap-4 sm:grid-cols-2">
+              <RosterStrip team={a} players={rosterA} />
+              <RosterStrip team={b} players={rosterB} />
+            </div>
+          )}
         </div>
         <div className="bg-muted/40 border-t md:border-t-0 md:border-l border-border/60 p-5 md:p-6 flex flex-col justify-between gap-4 md:w-64">
           <div>
