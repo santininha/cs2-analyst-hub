@@ -80,7 +80,7 @@ function MatchPage() {
         <CardContent className="p-6">
           <div className="grid grid-cols-3 items-center">
             <div className="flex items-center gap-3"><TeamBadge team={a} size="lg" /><div><div className="font-bold text-lg flex items-center gap-2">{a.name}<DataSourceTag team={a} size="xs" /></div><div className="text-xs text-muted-foreground">#{a.worldRank} • {a.winRate}%</div></div></div>
-            <div className="text-center text-3xl font-black text-primary">{m.result ? `${m.result.scoreA} - ${m.result.scoreB}` : "vs"}</div>
+            <div className="text-center text-3xl font-black text-foreground">{m.result ? `${m.result.scoreA} - ${m.result.scoreB}` : "vs"}</div>
             <div className="flex items-center gap-3 justify-end"><div className="text-right"><div className="font-bold text-lg flex items-center gap-2 justify-end">{b.name}<DataSourceTag team={b} size="xs" /></div><div className="text-xs text-muted-foreground">#{b.worldRank} • {b.winRate}%</div></div><TeamBadge team={b} size="lg" /></div>
           </div>
         </CardContent>
