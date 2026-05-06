@@ -2,7 +2,7 @@
 @source "../src";
 @import "tw-animate-css";
 
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Source+Serif+4:wght@600;700;800&display=swap");
 
 @custom-variant dark (&:is(.dark *));
 
@@ -64,18 +64,18 @@
   --card-foreground: oklch(0.24 0.008 25);
   --popover: oklch(0.995 0.002 25);
   --popover-foreground: oklch(0.24 0.008 25);
-  /* Muted dusty rose — desaturated, calm */
-  --primary: oklch(0.62 0.075 18);
+  /* Sharper, deeper rose — editorial and esports feel */
+  --primary: oklch(0.5 0.13 18);
   --primary-foreground: oklch(0.99 0.003 25);
-  --primary-glow: oklch(0.74 0.06 18);
-  --primary-soft: oklch(0.95 0.018 18);
-  --secondary: oklch(0.95 0.005 25);
-  --secondary-foreground: oklch(0.28 0.008 25);
-  --muted: oklch(0.955 0.004 25);
-  --muted-foreground: oklch(0.5 0.01 25);
-  --accent: oklch(0.95 0.018 18);
-  --accent-foreground: oklch(0.45 0.075 18);
-  --destructive: oklch(0.6 0.15 27);
+  --primary-glow: oklch(0.62 0.13 22);
+  --primary-soft: oklch(0.94 0.025 18);
+  --secondary: oklch(0.94 0.005 25);
+  --secondary-foreground: oklch(0.22 0.008 25);
+  --muted: oklch(0.95 0.004 25);
+  --muted-foreground: oklch(0.42 0.012 25);
+  --accent: oklch(0.93 0.03 18);
+  --accent-foreground: oklch(0.36 0.11 18);
+  --destructive: oklch(0.55 0.19 27);
   --destructive-foreground: oklch(0.99 0.003 25);
   --border: oklch(0.91 0.004 25);
   --input: oklch(0.93 0.004 25);
@@ -137,7 +137,7 @@
   }
 
   html {
-    font-size: 14px;
+    font-size: 15.5px;
   }
 
   body {
@@ -146,12 +146,23 @@
     font-family: var(--font-sans);
     font-feature-settings: "cv11", "ss01", "cv02", "cv03";
     -webkit-font-smoothing: antialiased;
-    line-height: 1.55;
+    line-height: 1.6;
   }
 
   h1, h2, h3, h4 {
-    letter-spacing: -0.02em;
-    font-weight: 600;
-    line-height: 1.2;
+    font-family: "Source Serif 4", "Inter", ui-serif, Georgia, serif;
+    letter-spacing: -0.015em;
+    font-weight: 700;
+    line-height: 1.15;
+    color: oklch(0.18 0.008 25);
+  }
+
+  /* Editorial small-caps style for section labels */
+  .eyebrow {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-primary);
   }
 }

@@ -79,11 +79,11 @@ function GlossaryPage() {
                 <Star className={`h-4 w-4 ${g.favorite ? "fill-primary text-primary" : "text-muted-foreground/50"}`} />
               </button>
               <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2 mb-1">
-                  <span className="text-[10px] font-semibold uppercase tracking-wider text-primary">{g.term}</span>
+                <div className="flex items-center gap-2 mb-1.5">
+                  <span className="text-[11px] font-bold uppercase tracking-[0.08em] text-primary">{g.term}</span>
                   <Badge variant="outline" className="text-[10px] font-medium px-1.5 py-0 h-4">{g.category}</Badge>
                 </div>
-                <p className="text-[14px] font-semibold leading-relaxed text-foreground">
+                <p className="text-[15px] font-medium leading-[1.55] text-foreground">
                   "{g.phrase}"
                 </p>
               </div>
