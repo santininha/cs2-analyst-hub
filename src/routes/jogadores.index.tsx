@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { PageHeader } from "@/components/PageHeader";
 import { TeamBadge } from "@/components/TeamBadge";
+import { DataSourceTag } from "@/components/DataSourceTag";
 import { teams, getTeamPlayers } from "@/data/mock";
 import { ChevronDown, ChevronRight, Flame, Search } from "lucide-react";
 
