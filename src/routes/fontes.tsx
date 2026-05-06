@@ -287,6 +287,52 @@ function DataSourcesPage() {
             </span>
           }
         />
+
+        {/* Partidas reais */}
+        <StatusCard
+          icon={Swords}
+          tone={matchesCtx.gridCount > 0 ? "ok" : matchesCtx.loading ? "idle" : "warn"}
+          title="Partidas (GRID)"
+          subtitle={
+            matchesCtx.loading
+              ? "Conectando GRID · carregando partidas…"
+              : matchesCtx.gridCount > 0
+                ? `${matchesCtx.gridCount} partidas reais carregadas`
+                : "Nenhuma partida real — usando fallback mock"
+          }
+          loading={matchesCtx.loading}
+          rows={[
+            { label: "Total", value: <Num>{matchesCtx.matches.length}</Num> },
+            { label: "Ao vivo", value: <Num>{matchesCtx.live.length}</Num> },
+            { label: "Próximas", value: <Num>{matchesCtx.upcoming.length}</Num> },
+            { label: "Finalizadas", value: <Num>{matchesCtx.completed.length}</Num> },
+            {
+              label: "Fonte",
+              value: (
+                <span className="text-[12px] uppercase tracking-[0.1em] text-muted-foreground">
+                  {matchesCtx.source}
+                </span>
+              ),
+            },
+            {
+              label: "Última sincronização",
+              value: (
+                <span className="inline-flex items-center gap-1.5 text-[12px]">
+                  <Clock className="h-3 w-3 text-muted-foreground" />
+                  {matchesCtx.lastSync ? matchesCtx.lastSync.toLocaleString("pt-BR") : "—"}
+                  {matchesCtx.cached && (
+                    <Badge variant="secondary" className="text-[9px] ml-1">cache</Badge>
+                  )}
+                </span>
+              ),
+            },
+          ]}
+          footer={
+            matchesCtx.error ? (
+              <span className="text-amber-300/90">{matchesCtx.error}</span>
+            ) : undefined
+          }
+        />
       </div>
 
       {/* Map pool */}
