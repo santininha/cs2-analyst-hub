@@ -445,3 +445,38 @@ function RosterStrip({
     </div>
   );
 }
+
+function QualityBadge({ quality }: { quality: import("@/lib/matchTypes").MatchQuality }) {
+  if (quality === "grid-real") {
+    return (
+      <span
+        title="Partida real confirmada via GRID"
+        className="text-[9px] uppercase tracking-[0.1em] font-semibold px-1.5 py-[1.5px] rounded bg-emerald-500/10 text-emerald-300/90 border border-emerald-500/25 inline-flex items-center gap-1"
+      >
+        <span className="h-1 w-1 rounded-full bg-emerald-400" />
+        GRID real
+      </span>
+    );
+  }
+  if (quality === "manual") {
+    return (
+      <span
+        title="Prévia manual do caster (não veio da GRID)"
+        className="text-[9px] uppercase tracking-[0.1em] font-semibold px-1.5 py-[1.5px] rounded bg-amber-500/10 text-amber-300/90 border border-amber-500/30"
+      >
+        Prévia manual
+      </span>
+    );
+  }
+  if (quality === "mock-fallback") {
+    return (
+      <span
+        title="Mock fallback — exibido por ausência de dado real"
+        className="text-[9px] uppercase tracking-[0.1em] font-semibold px-1.5 py-[1.5px] rounded bg-muted text-muted-foreground border border-border/60"
+      >
+        Mock fallback
+      </span>
+    );
+  }
+  return null;
+}
