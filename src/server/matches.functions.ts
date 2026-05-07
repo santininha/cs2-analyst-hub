@@ -3,10 +3,10 @@ import { createServerFn } from "@tanstack/react-start";
 /**
  * Camada inicial de partidas reais GRID.
  *
- * A API da GRID expõe partidas via "allSeries" no Central Data. Como as
- * permissões da chave atual podem variar, esta função é defensiva: se a
- * query falhar ou retornar vazio, devolve { matches: [] } sem erro fatal,
- * permitindo que o app utilize o fallback mock.
+ * - Filtra partidas a partir de hoje (00:00) — não traz histórico antigo.
+ * - Descarta GRID-TEST, scrims, showmatches e times genéricos (CS2-1, etc).
+ * - Tolerante a falhas: se a query GraphQL falhar, devolve { matches: [] }
+ *   sem erro fatal e o app cai no estado vazio (não inventa dados).
  */
 
 const GRID_ENDPOINT = "https://api-op.grid.gg/central-data/graphql";
@@ -24,7 +24,7 @@ export type GridMatch = {
 };
 
 let cache: { at: number; matches: GridMatch[] } | null = null;
-const TTL_MS = 5 * 60 * 1000; // 5 min — partidas mudam mais rápido que times
+const TTL_MS = 5 * 60 * 1000;
 
 async function gql<T>(apiKey: string, query: string, variables?: Record<string, unknown>): Promise<T> {
   const res = await fetch(GRID_ENDPOINT, {
@@ -38,17 +38,39 @@ async function gql<T>(apiKey: string, query: string, variables?: Record<string, 
   return json.data as T;
 }
 
-function deriveStatus(s: any): "upcoming" | "live" | "completed" {
-  const t = String(s ?? "").toLowerCase();
-  if (t.includes("live") || t.includes("progress")) return "live";
-  if (t.includes("finish") || t.includes("complete") || t.includes("ended")) return "completed";
-  return "upcoming";
+function isLowRelevance(tournament: string, a: string, b: string): boolean {
+  const t = tournament.toLowerCase();
+  if (
+    t.includes("test") ||
+    t.includes("sandbox") ||
+    t.includes("scrim") ||
+    t.includes("showmatch") ||
+    t.includes("demo") ||
+    t.includes("grid-test")
+  ) return true;
+  const generic = (n: string) => {
+    const x = (n ?? "").trim().toLowerCase();
+    if (!x) return true;
+    if (/^cs2[-_ ]?\d+$/.test(x)) return true;
+    if (/^team[-_ ]?[a-z]$/.test(x)) return true;
+    if (/^test/.test(x)) return true;
+    if (/^tbd$/.test(x) || /^placeholder/.test(x)) return true;
+    return false;
+  };
+  return generic(a) || generic(b);
 }
 
 async function fetchSeries(apiKey: string): Promise<GridMatch[]> {
-  // Defensive query — only commonly available fields.
+  // Janela: a partir de agora. Não trazemos histórico — caster pediu apenas
+  // partidas de hoje em diante.
+  const startMs = (() => {
+    const d = new Date();
+    d.setHours(0, 0, 0, 0);
+    return d.getTime();
+  })();
+
   const query = `query Series {
-    allSeries(first: 25, filter: { titleId: ${CS2_TITLE_ID} }, orderBy: StartTimeScheduled) {
+    allSeries(first: 50, filter: { titleId: ${CS2_TITLE_ID} }, orderBy: StartTimeScheduled) {
       edges {
         node {
           id
@@ -57,7 +79,6 @@ async function fetchSeries(apiKey: string): Promise<GridMatch[]> {
           tournament { name }
           teams {
             baseInfo { id name }
-            scoreAdvantage
           }
         }
       }
@@ -74,13 +95,18 @@ async function fetchSeries(apiKey: string): Promise<GridMatch[]> {
     const b = teams[1]?.baseInfo;
     if (!a || !b) continue;
     const start = n.startTimeScheduled ?? new Date().toISOString();
-    const past = new Date(start).getTime() < Date.now();
+    const startTimeMs = new Date(start).getTime();
+    if (Number.isFinite(startTimeMs) && startTimeMs < startMs) continue;
+    const tournament = n.tournament?.name ?? "—";
+    if (isLowRelevance(tournament, a.name, b.name)) continue;
     out.push({
       id: String(n.id),
-      tournament: n.tournament?.name ?? "—",
+      tournament,
       boType: n.format?.nameShortened ?? "BO?",
       startTime: start,
-      status: past ? "completed" : "upcoming",
+      // Sem campo de status confiável — "upcoming" por padrão; live é
+      // detectado no client se start <= agora < start + janela.
+      status: "upcoming",
       teamA: { gridId: String(a.id), name: a.name },
       teamB: { gridId: String(b.id), name: b.name },
     });
