@@ -274,6 +274,8 @@ function matchToEnrichedFallback(m: import("@/data/mock").Match): MatchEnriched 
     mapPool: [],
     maps: m.maps,
     source: "mock",
+    quality: "manual",
+    relevance: 0,
     lastSyncAt: new Date().toISOString(),
   };
 }
