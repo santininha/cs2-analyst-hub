@@ -291,12 +291,10 @@ function FeaturedMatch({ match: m }: { match: MatchEnriched }) {
     <Card className="overflow-hidden border-border/60">
       <div className="grid md:grid-cols-[1fr_auto] items-stretch">
         <div className="p-5 md:p-6">
-          <div className="flex items-center gap-2 mb-3">
+          <div className="flex items-center gap-2 mb-3 flex-wrap">
             <span className="eyebrow">{m.status === "live" ? "Ao vivo agora" : "Próxima partida em destaque"}</span>
             <Badge variant="default" className="text-[10px]">{m.tournament}</Badge>
-            {m.source !== "mock" && (
-              <Badge variant="outline" className="text-[9px] uppercase tracking-[0.1em] border-emerald-500/30 text-emerald-300/90">GRID</Badge>
-            )}
+            <QualityBadge quality={m.quality} />
           </div>
           <div className="flex items-center gap-5 mb-4">
             <div className="flex items-center gap-3">
