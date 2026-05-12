@@ -296,7 +296,7 @@ export const maps: CSMap[] = [
   { id: "anubis", name: "Anubis", pickRate: 55, ctWinRate: 47, trWinRate: 53, topTeams: ["g2", "spirit"], topPlayers: ["niko"], active: true },
   { id: "overpass", name: "Overpass", pickRate: 50, ctWinRate: 54, trWinRate: 46, topTeams: ["spirit", "furia"], topPlayers: ["chopper", "fallen"], active: true },
   // Historical only — kept for old match data, never used as current rotation.
-  { id: "vertigo", name: "Vertigo", pickRate: 0, ctWinRate: 51, trWinRate: 49, topTeams: ["mibr"], topPlayers: ["exit"], active: false },
+  { id: "vertigo", name: "Vertigo", pickRate: 0, ctWinRate: 51, trWinRate: 49, topTeams: ["mibr"], topPlayers: ["insani"], active: false },
 ];
 
 // Filter mock maps using the central Active Duty config (single source of truth).
