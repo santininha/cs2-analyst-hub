@@ -31,21 +31,21 @@ export type ActiveDutyConfig = {
  * ÚNICA fonte de verdade do map pool. Editar aqui ao mudar a rotação.
  */
 export const CURRENT_ACTIVE_DUTY_MAP_POOL: ActiveDutyConfig = {
-  season: "CS2 2026 - atual",
+  season: "CS2 Premier Season 4 (2026)",
   lastVerifiedAt: new Date().toISOString(),
-  sourceLabel: "Configuração manual validada",
+  sourceLabel: "Valve / HLTV / Liquipedia (validação manual, sync diário GRID)",
   activeMaps: [
-    { id: "dust2", name: "Dust2", active: true },
-    { id: "mirage", name: "Mirage", active: true },
-    { id: "inferno", name: "Inferno", active: true },
-    { id: "nuke", name: "Nuke", active: true },
     { id: "ancient", name: "Ancient", active: true },
+    { id: "anubis", name: "Anubis", active: true, addedAt: "2026-01-19" },
+    { id: "dust2", name: "Dust2", active: true },
+    { id: "inferno", name: "Inferno", active: true },
+    { id: "mirage", name: "Mirage", active: true },
+    { id: "nuke", name: "Nuke", active: true },
     { id: "overpass", name: "Overpass", active: true },
-    { id: "anubis", name: "Anubis", active: true },
   ],
   inactiveMaps: [
+    { id: "train", name: "Train", active: false, removedAt: "2026-01-19" },
     { id: "vertigo", name: "Vertigo", active: false, removedAt: "2025-10-01" },
-    { id: "train", name: "Train", active: false, removedAt: "2024-09-01" },
     { id: "cache", name: "Cache", active: false, removedAt: "2020-04-01" },
   ],
 };
