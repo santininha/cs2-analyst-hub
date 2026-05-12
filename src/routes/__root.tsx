@@ -95,6 +95,7 @@ function RootComponent() {
       </div>
       <Toaster />
     </SidebarProvider>
+    </HeadToHeadProvider>
     </MatchesProvider>
     </TeamsProvider>
   );
