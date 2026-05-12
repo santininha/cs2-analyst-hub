@@ -57,7 +57,7 @@ function MatchesList() {
           <TabsTrigger value="hoje">Hoje ({today.length})</TabsTrigger>
           <TabsTrigger value="proximas">Próximas ({futureUpcoming.length})</TabsTrigger>
           <TabsTrigger value="live">Ao vivo ({live.length})</TabsTrigger>
-          <TabsTrigger value="historico">Histórico ({history.length})</TabsTrigger>
+          <TabsTrigger value="historico">Tier S últimos 3 meses ({history.length})</TabsTrigger>
         </TabsList>
 
         <TabsContent value="hoje" className="mt-4">
