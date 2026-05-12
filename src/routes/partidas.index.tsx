@@ -57,7 +57,7 @@ function MatchesList() {
           <TabsTrigger value="hoje">Hoje ({today.length})</TabsTrigger>
           <TabsTrigger value="proximas">Próximas ({futureUpcoming.length})</TabsTrigger>
           <TabsTrigger value="live">Ao vivo ({live.length})</TabsTrigger>
-          <TabsTrigger value="historico">Histórico ({history.length})</TabsTrigger>
+          <TabsTrigger value="historico">Tier S últimos 3 meses ({history.length})</TabsTrigger>
         </TabsList>
 
         <TabsContent value="hoje" className="mt-4">
@@ -70,7 +70,7 @@ function MatchesList() {
           <MatchGrid items={live} loading={loading} emptyText="Nenhuma partida ao vivo no momento." />
         </TabsContent>
         <TabsContent value="historico" className="mt-4">
-          <MatchGrid items={history} loading={loading} emptyText="Sem histórico recente." />
+          <MatchGrid items={history} loading={loading} emptyText="Sem partidas Tier S concluídas nos últimos 3 meses." />
         </TabsContent>
       </Tabs>
     </div>

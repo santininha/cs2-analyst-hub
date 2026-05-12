@@ -11,6 +11,7 @@ import {
   type MatchStatus,
 } from "@/lib/matchTypes";
 import { getGridMatches, type GridMatch } from "@/server/matches.functions";
+import { getGridRecentTierSSeries, type RecentSeries } from "@/server/recentSeries.functions";
 
 type MatchesContextValue = {
   matches: MatchEnriched[];
@@ -172,6 +173,7 @@ function minimalTeam(gridId: string, name: string): any {
 export function MatchesProvider({ children }: { children: ReactNode }) {
   const { bySlug, teams } = useTeams();
   const [grid, setGrid] = useState<GridMatch[]>([]);
+  const [recent, setRecent] = useState<RecentSeries[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [lastSync, setLastSync] = useState<Date | null>(null);
@@ -182,11 +184,15 @@ export function MatchesProvider({ children }: { children: ReactNode }) {
     let cancelled = false;
     (async () => {
       try {
-        const res = await getGridMatches();
+        const [res, recRes] = await Promise.all([
+          getGridMatches(),
+          getGridRecentTierSSeries(),
+        ]);
         if (cancelled) return;
         setGrid(res.matches);
-        setError(res.error);
-        setCached(res.cached);
+        setRecent(recRes.series);
+        setError(res.error ?? recRes.error);
+        setCached(res.cached || recRes.cached);
         setLastSync(new Date());
       } catch (e) {
         if (!cancelled) setError(e instanceof Error ? e.message : String(e));
@@ -212,6 +218,35 @@ export function MatchesProvider({ children }: { children: ReactNode }) {
       .map((g) => gridToEnriched(g, teamByGridId, lastSyncAt, now))
       .filter((x): x is MatchEnriched => !!x);
 
+    const recents: MatchEnriched[] = recent
+      .map((r): MatchEnriched | null => {
+        if (isLowRelevance({ tournament: r.tournament, teamAName: r.teamA.name, teamBName: r.teamB.name })) return null;
+        const teamA = teamByGridId.get(r.teamA.gridId) ?? minimalTeam(r.teamA.gridId, r.teamA.name);
+        const teamB = teamByGridId.get(r.teamB.gridId) ?? minimalTeam(r.teamB.gridId, r.teamB.name);
+        return {
+          id: `grid-recent:${r.id}`,
+          slug: r.id,
+          tournament: r.tournament,
+          boType: r.boType,
+          startTime: r.startTime,
+          status: "completed",
+          teamA,
+          teamB,
+          mapPool: activeDutyMapPool(),
+          maps: [],
+          source: "grid",
+          quality: "grid-real",
+          relevance: scoreRelevance({
+            source: "grid",
+            teamAEnriched: !!teamByGridId.get(r.teamA.gridId),
+            teamBEnriched: !!teamByGridId.get(r.teamB.gridId),
+            tournament: r.tournament,
+          }) + 10, // Tier S boost
+          lastSyncAt,
+        };
+      })
+      .filter((x): x is MatchEnriched => !!x);
+
     const mocks = mockMatches
       .map((m) => mockToEnriched(m, getTeam, lastSyncAt, now))
       .filter((x): x is MatchEnriched => !!x);
@@ -224,6 +259,10 @@ export function MatchesProvider({ children }: { children: ReactNode }) {
     };
     const seen = new Map<string, MatchEnriched>();
     for (const m of grids) seen.set(dedupKey(m), m);
+    for (const m of recents) {
+      const k = dedupKey(m);
+      if (!seen.has(k)) seen.set(k, m);
+    }
     for (const m of mocks) {
       const k = dedupKey(m);
       if (!seen.has(k)) seen.set(k, m);
@@ -273,7 +312,7 @@ export function MatchesProvider({ children }: { children: ReactNode }) {
       lastSync,
       cached,
     };
-  }, [grid, teams, bySlug, loading, error, lastSync, cached, ignoredCount]);
+  }, [grid, recent, teams, bySlug, loading, error, lastSync, cached, ignoredCount]);
 
   return <MatchesContext.Provider value={value}>{children}</MatchesContext.Provider>;
 }
