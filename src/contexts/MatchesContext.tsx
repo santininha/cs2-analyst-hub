@@ -259,6 +259,10 @@ export function MatchesProvider({ children }: { children: ReactNode }) {
     };
     const seen = new Map<string, MatchEnriched>();
     for (const m of grids) seen.set(dedupKey(m), m);
+    for (const m of recents) {
+      const k = dedupKey(m);
+      if (!seen.has(k)) seen.set(k, m);
+    }
     for (const m of mocks) {
       const k = dedupKey(m);
       if (!seen.has(k)) seen.set(k, m);
