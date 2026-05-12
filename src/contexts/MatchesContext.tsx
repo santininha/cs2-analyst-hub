@@ -218,6 +218,35 @@ export function MatchesProvider({ children }: { children: ReactNode }) {
       .map((g) => gridToEnriched(g, teamByGridId, lastSyncAt, now))
       .filter((x): x is MatchEnriched => !!x);
 
+    const recents: MatchEnriched[] = recent
+      .map((r): MatchEnriched | null => {
+        if (isLowRelevance({ tournament: r.tournament, teamAName: r.teamA.name, teamBName: r.teamB.name })) return null;
+        const teamA = teamByGridId.get(r.teamA.gridId) ?? minimalTeam(r.teamA.gridId, r.teamA.name);
+        const teamB = teamByGridId.get(r.teamB.gridId) ?? minimalTeam(r.teamB.gridId, r.teamB.name);
+        return {
+          id: `grid-recent:${r.id}`,
+          slug: r.id,
+          tournament: r.tournament,
+          boType: r.boType,
+          startTime: r.startTime,
+          status: "completed",
+          teamA,
+          teamB,
+          mapPool: activeDutyMapPool(),
+          maps: [],
+          source: "grid",
+          quality: "grid-real",
+          relevance: scoreRelevance({
+            source: "grid",
+            teamAEnriched: !!teamByGridId.get(r.teamA.gridId),
+            teamBEnriched: !!teamByGridId.get(r.teamB.gridId),
+            tournament: r.tournament,
+          }) + 10, // Tier S boost
+          lastSyncAt,
+        };
+      })
+      .filter((x): x is MatchEnriched => !!x);
+
     const mocks = mockMatches
       .map((m) => mockToEnriched(m, getTeam, lastSyncAt, now))
       .filter((x): x is MatchEnriched => !!x);
