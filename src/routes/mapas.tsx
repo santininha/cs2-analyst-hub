@@ -23,8 +23,9 @@ function MapsPage() {
   const [windowId, setWindowId] = useState<AnalysisWindowId>(DEFAULT_ANALYSIS_WINDOW.id);
   const win = ANALYSIS_WINDOWS[windowId];
 
-  // Show active maps first, historical at the bottom (clearly tagged).
-  const sorted = [...maps].sort((a, b) => Number(b.active !== false) - Number(a.active !== false));
+  // Show ONLY maps in current Active Duty rotation. Maps removed from rotation
+  // (incl. nos últimos 3 meses) ficam fora da análise — solicitação do caster.
+  const sorted = maps.filter((m) => isActiveMap(m.id));
 
   return (
     <div className="max-w-6xl mx-auto">
