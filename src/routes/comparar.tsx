@@ -11,7 +11,8 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
 import { Button } from "@/components/ui/button";
 import { teams, getTeam, getTeamPlayers, getTeamMapStats, getTeamMapHistory, maps, activeMaps, matches } from "@/data/mock";
-import { Mic, TrendingUp, TrendingDown, Check, ChevronsUpDown } from "lucide-react";
+import { useHeadToHead } from "@/contexts/HeadToHeadContext";
+import { Mic, TrendingUp, TrendingDown, Check, ChevronsUpDown, Loader2 } from "lucide-react";
 
 export const Route = createFileRoute("/comparar")({
   head: () => ({
@@ -43,14 +44,20 @@ function Compare() {
   const bBest = [...bStats].sort((s1, s2) => s2.winRate - s1.winRate).slice(0, 2);
   const bWorst = [...bStats].sort((s1, s2) => s1.winRate - s2.winRate).slice(0, 2);
 
+  const h2hCtx = useHeadToHead();
   const h2h = useMemo(() => {
+    const realCount = h2hCtx.countBetween(aId, bId);
+    const realList = h2hCtx.matchesBetween(aId, bId);
+    if (realCount > 0 || h2hCtx.data) {
+      return { total: realCount, list: realList, source: "grid" as const };
+    }
     const list = matches.filter(
       (m) =>
         (m.teamAId === aId && m.teamBId === bId) ||
         (m.teamAId === bId && m.teamBId === aId)
     );
-    return { total: list.length, list };
-  }, [aId, bId]);
+    return { total: list.length, list, source: "mock" as const };
+  }, [aId, bId, h2hCtx]);
 
   const aPlayers = getTeamPlayers(aId);
   const bPlayers = getTeamPlayers(bId);
@@ -118,9 +125,31 @@ function Compare() {
           <div className="grid grid-cols-3 items-center gap-4">
             <TeamHeader team={a} align="left" />
             <div className="text-center">
-              <div className="text-[11px] uppercase tracking-wider text-muted-foreground font-semibold mb-1">Head-to-head</div>
+              <div className="text-[11px] uppercase tracking-wider text-muted-foreground font-semibold mb-1 flex items-center justify-center gap-1.5">
+                Head-to-head
+                {h2hCtx.loading && <Loader2 className="h-3 w-3 animate-spin" />}
+              </div>
               <div className="text-3xl font-bold text-primary">{h2h.total}</div>
-              <div className="text-[11px] text-muted-foreground">confrontos no histórico</div>
+              <div className="text-[11px] text-muted-foreground">
+                confrontos · {h2hCtx.windowLabel}
+              </div>
+              <div className="mt-1">
+                <Badge
+                  variant="outline"
+                  className={`text-[9px] uppercase tracking-wider ${
+                    h2h.source === "grid"
+                      ? "border-emerald-500/40 text-emerald-300/90 bg-emerald-500/10"
+                      : "border-border/60 text-muted-foreground"
+                  }`}
+                >
+                  {h2h.source === "grid" ? "GRID real" : "Mock fallback"}
+                </Badge>
+              </div>
+              {h2hCtx.error && (
+                <div className="text-[10px] text-amber-400/80 mt-1 max-w-[200px] mx-auto truncate" title={h2hCtx.error}>
+                  GRID falhou — usando 0
+                </div>
+              )}
             </div>
             <TeamHeader team={b} align="right" />
           </div>
