@@ -173,6 +173,7 @@ function minimalTeam(gridId: string, name: string): any {
 export function MatchesProvider({ children }: { children: ReactNode }) {
   const { bySlug, teams } = useTeams();
   const [grid, setGrid] = useState<GridMatch[]>([]);
+  const [recent, setRecent] = useState<RecentSeries[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [lastSync, setLastSync] = useState<Date | null>(null);
@@ -183,11 +184,15 @@ export function MatchesProvider({ children }: { children: ReactNode }) {
     let cancelled = false;
     (async () => {
       try {
-        const res = await getGridMatches();
+        const [res, recRes] = await Promise.all([
+          getGridMatches(),
+          getGridRecentTierSSeries(),
+        ]);
         if (cancelled) return;
         setGrid(res.matches);
-        setError(res.error);
-        setCached(res.cached);
+        setRecent(recRes.series);
+        setError(res.error ?? recRes.error);
+        setCached(res.cached || recRes.cached);
         setLastSync(new Date());
       } catch (e) {
         if (!cancelled) setError(e instanceof Error ? e.message : String(e));
