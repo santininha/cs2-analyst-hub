@@ -61,6 +61,7 @@ function RootComponent() {
   return (
     <TeamsProvider>
     <MatchesProvider>
+    <HeadToHeadProvider>
     <SidebarProvider
       style={
         {
