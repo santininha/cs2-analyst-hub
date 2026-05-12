@@ -312,7 +312,7 @@ export function MatchesProvider({ children }: { children: ReactNode }) {
       lastSync,
       cached,
     };
-  }, [grid, teams, bySlug, loading, error, lastSync, cached, ignoredCount]);
+  }, [grid, recent, teams, bySlug, loading, error, lastSync, cached, ignoredCount]);
 
   return <MatchesContext.Provider value={value}>{children}</MatchesContext.Provider>;
 }
