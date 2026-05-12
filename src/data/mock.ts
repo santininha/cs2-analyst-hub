@@ -95,15 +95,32 @@ export type GlossaryTerm = {
   favorite: boolean;
 };
 
+// Top 20 — HLTV World Ranking on May 11th, 2026
 export const teams: Team[] = [
-  { id: "furia", name: "FURIA", tag: "FUR", region: "BR", worldRank: 8, winRate: 64, logoColor: "oklch(0.25 0.05 60)" },
-  { id: "mibr", name: "MIBR", tag: "MBR", region: "BR", worldRank: 22, winRate: 55, logoColor: "oklch(0.55 0.18 25)" },
-  { id: "navi", name: "NAVI", tag: "NAVI", region: "EU", worldRank: 3, winRate: 71, logoColor: "oklch(0.7 0.18 90)" },
   { id: "vitality", name: "Vitality", tag: "VIT", region: "EU", worldRank: 1, winRate: 78, logoColor: "oklch(0.85 0.16 95)" },
-  { id: "g2", name: "G2", tag: "G2", region: "EU", worldRank: 5, winRate: 68, logoColor: "oklch(0.65 0.05 60)" },
-  { id: "spirit", name: "Spirit", tag: "SPR", region: "EU", worldRank: 2, winRate: 73, logoColor: "oklch(0.55 0.15 30)" },
-  { id: "imperial", name: "Imperial", tag: "IMP", region: "BR", worldRank: 28, winRate: 52, logoColor: "oklch(0.4 0.12 250)" },
-  { id: "pain", name: "paiN", tag: "PAIN", region: "BR", worldRank: 18, winRate: 58, logoColor: "oklch(0.55 0.2 20)" },
+  { id: "navi", name: "Natus Vincere", tag: "NAVI", region: "EU", worldRank: 2, winRate: 71, logoColor: "oklch(0.7 0.18 90)" },
+  { id: "furia", name: "FURIA", tag: "FUR", region: "BR", worldRank: 3, winRate: 68, logoColor: "oklch(0.25 0.05 60)" },
+  { id: "falcons", name: "Falcons", tag: "FLCN", region: "SA", worldRank: 4, winRate: 66, logoColor: "oklch(0.55 0.18 30)" },
+  { id: "spirit", name: "Team Spirit", tag: "SPR", region: "EU", worldRank: 5, winRate: 67, logoColor: "oklch(0.55 0.15 30)" },
+  { id: "aurora", name: "Aurora", tag: "AUR", region: "EU", worldRank: 6, winRate: 64, logoColor: "oklch(0.6 0.15 280)" },
+  { id: "parivision", name: "PARIVISION", tag: "PARI", region: "EU", worldRank: 7, winRate: 63, logoColor: "oklch(0.55 0.18 340)" },
+  { id: "mongolz", name: "The MongolZ", tag: "MGZ", region: "AS", worldRank: 8, winRate: 62, logoColor: "oklch(0.45 0.1 30)" },
+  { id: "astralis", name: "Astralis", tag: "AST", region: "EU", worldRank: 9, winRate: 60, logoColor: "oklch(0.55 0.18 25)" },
+  { id: "fut", name: "FUT Esports", tag: "FUT", region: "EU", worldRank: 10, winRate: 59, logoColor: "oklch(0.5 0.14 260)" },
+  { id: "mouz", name: "MOUZ", tag: "MOUZ", region: "EU", worldRank: 11, winRate: 60, logoColor: "oklch(0.55 0.18 20)" },
+  { id: "g2", name: "G2 Esports", tag: "G2", region: "EU", worldRank: 12, winRate: 58, logoColor: "oklch(0.65 0.05 60)" },
+  { id: "faze", name: "FaZe Clan", tag: "FAZE", region: "EU", worldRank: 13, winRate: 57, logoColor: "oklch(0.55 0.18 30)" },
+  { id: "gamerlegion", name: "GamerLegion", tag: "GL", region: "EU", worldRank: 14, winRate: 56, logoColor: "oklch(0.5 0.12 30)" },
+  { id: "3dmax", name: "3DMAX", tag: "3DM", region: "EU", worldRank: 15, winRate: 55, logoColor: "oklch(0.6 0.15 50)" },
+  { id: "9z", name: "9z Team", tag: "9Z", region: "SA", worldRank: 16, winRate: 54, logoColor: "oklch(0.6 0.18 150)" },
+  { id: "b8", name: "B8", tag: "B8", region: "EU", worldRank: 17, winRate: 53, logoColor: "oklch(0.55 0.15 250)" },
+  { id: "legacy", name: "Legacy", tag: "LEG", region: "BR", worldRank: 18, winRate: 52, logoColor: "oklch(0.45 0.12 30)" },
+  { id: "monte", name: "Monte", tag: "MNT", region: "EU", worldRank: 19, winRate: 51, logoColor: "oklch(0.55 0.15 80)" },
+  { id: "heroic", name: "Heroic", tag: "HRC", region: "EU", worldRank: 20, winRate: 50, logoColor: "oklch(0.55 0.18 25)" },
+  // Legacy entries kept to preserve existing player/match references (out of top 20).
+  { id: "mibr", name: "MIBR", tag: "MBR", region: "BR", worldRank: 26, winRate: 55, logoColor: "oklch(0.55 0.18 25)" },
+  { id: "imperial", name: "Imperial", tag: "IMP", region: "BR", worldRank: 40, winRate: 52, logoColor: "oklch(0.4 0.12 250)" },
+  { id: "pain", name: "paiN", tag: "PAIN", region: "BR", worldRank: 35, winRate: 58, logoColor: "oklch(0.55 0.2 20)" },
 ];
 
 export const players: Player[] = [
