@@ -125,9 +125,31 @@ function Compare() {
           <div className="grid grid-cols-3 items-center gap-4">
             <TeamHeader team={a} align="left" />
             <div className="text-center">
-              <div className="text-[11px] uppercase tracking-wider text-muted-foreground font-semibold mb-1">Head-to-head</div>
+              <div className="text-[11px] uppercase tracking-wider text-muted-foreground font-semibold mb-1 flex items-center justify-center gap-1.5">
+                Head-to-head
+                {h2hCtx.loading && <Loader2 className="h-3 w-3 animate-spin" />}
+              </div>
               <div className="text-3xl font-bold text-primary">{h2h.total}</div>
-              <div className="text-[11px] text-muted-foreground">confrontos no histórico</div>
+              <div className="text-[11px] text-muted-foreground">
+                confrontos · {h2hCtx.windowLabel}
+              </div>
+              <div className="mt-1">
+                <Badge
+                  variant="outline"
+                  className={`text-[9px] uppercase tracking-wider ${
+                    h2h.source === "grid"
+                      ? "border-emerald-500/40 text-emerald-300/90 bg-emerald-500/10"
+                      : "border-border/60 text-muted-foreground"
+                  }`}
+                >
+                  {h2h.source === "grid" ? "GRID real" : "Mock fallback"}
+                </Badge>
+              </div>
+              {h2hCtx.error && (
+                <div className="text-[10px] text-amber-400/80 mt-1 max-w-[200px] mx-auto truncate" title={h2hCtx.error}>
+                  GRID falhou — usando 0
+                </div>
+              )}
             </div>
             <TeamHeader team={b} align="right" />
           </div>
