@@ -26,12 +26,29 @@ const TeamsContext = createContext<TeamsContextValue | null>(null);
 // Map our mock team ids to their official GRID names (CS2 titleId 28).
 // Without this, fuzzy matching picks wrong entities (e.g. NaVi Youth instead of Natus Vincere).
 const GRID_NAME_BY_MOCK_ID: Record<string, string> = {
-  furia: "FURIA",
-  mibr: "MIBR",
-  navi: "Natus Vincere",
+  // Top 20 — HLTV ranking on May 11th, 2026
   vitality: "Team Vitality",
-  g2: "G2 Esports",
+  navi: "Natus Vincere",
+  furia: "FURIA",
+  falcons: "Team Falcons",
   spirit: "Team Spirit",
+  aurora: "Aurora Gaming",
+  parivision: "PARIVISION",
+  mongolz: "The MongolZ",
+  astralis: "Astralis",
+  fut: "FUT Esports",
+  mouz: "MOUZ",
+  g2: "G2 Esports",
+  faze: "FaZe Clan",
+  gamerlegion: "GamerLegion",
+  "3dmax": "3DMAX",
+  "9z": "9z Team",
+  b8: "B8",
+  legacy: "Legacy",
+  monte: "Monte",
+  heroic: "Heroic",
+  // Legacy (out of top 20, kept for player/match references)
+  mibr: "MIBR",
   imperial: "Imperial",
   pain: "Pain Gaming",
 };
