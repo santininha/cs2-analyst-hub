@@ -91,7 +91,10 @@ export type GlossaryTerm = {
     | "mapa"
     | "destaque"
     | "crise"
-    | "pos-jogo";
+    | "pos-jogo"
+    | "palavras-chave"
+    | "expressao"
+    | "termos-tecnicos";
   favorite: boolean;
 };
 
