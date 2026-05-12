@@ -11,7 +11,8 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
 import { Button } from "@/components/ui/button";
 import { teams, getTeam, getTeamPlayers, getTeamMapStats, getTeamMapHistory, maps, activeMaps, matches } from "@/data/mock";
-import { Mic, TrendingUp, TrendingDown, Check, ChevronsUpDown } from "lucide-react";
+import { useHeadToHead } from "@/contexts/HeadToHeadContext";
+import { Mic, TrendingUp, TrendingDown, Check, ChevronsUpDown, Loader2 } from "lucide-react";
 
 export const Route = createFileRoute("/comparar")({
   head: () => ({
