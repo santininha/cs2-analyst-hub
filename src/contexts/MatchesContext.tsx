@@ -11,6 +11,7 @@ import {
   type MatchStatus,
 } from "@/lib/matchTypes";
 import { getGridMatches, type GridMatch } from "@/server/matches.functions";
+import { getGridRecentTierSSeries, type RecentSeries } from "@/server/recentSeries.functions";
 
 type MatchesContextValue = {
   matches: MatchEnriched[];
