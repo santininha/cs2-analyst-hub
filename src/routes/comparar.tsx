@@ -44,14 +44,20 @@ function Compare() {
   const bBest = [...bStats].sort((s1, s2) => s2.winRate - s1.winRate).slice(0, 2);
   const bWorst = [...bStats].sort((s1, s2) => s1.winRate - s2.winRate).slice(0, 2);
 
+  const h2hCtx = useHeadToHead();
   const h2h = useMemo(() => {
+    const realCount = h2hCtx.countBetween(aId, bId);
+    const realList = h2hCtx.matchesBetween(aId, bId);
+    if (realCount > 0 || h2hCtx.data) {
+      return { total: realCount, list: realList, source: "grid" as const };
+    }
     const list = matches.filter(
       (m) =>
         (m.teamAId === aId && m.teamBId === bId) ||
         (m.teamAId === bId && m.teamBId === aId)
     );
-    return { total: list.length, list };
-  }, [aId, bId]);
+    return { total: list.length, list, source: "mock" as const };
+  }, [aId, bId, h2hCtx]);
 
   const aPlayers = getTeamPlayers(aId);
   const bPlayers = getTeamPlayers(bId);
