@@ -5,6 +5,7 @@ import { WorkspaceSidebar } from "@/components/WorkspaceSidebar";
 import { LiveDataBadge } from "@/components/LiveDataBadge";
 import { TeamsProvider } from "@/contexts/TeamsContext";
 import { MatchesProvider } from "@/contexts/MatchesContext";
+import { HeadToHeadProvider } from "@/contexts/HeadToHeadContext";
 
 import appCss from "../styles.css?url";
 
