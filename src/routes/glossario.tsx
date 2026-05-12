@@ -16,6 +16,9 @@ export const Route = createFileRoute("/glossario")({
 
 const categories = [
   { id: "all", label: "Todas" },
+  { id: "palavras-chave", label: "Palavras-chave" },
+  { id: "expressao", label: "Expressão" },
+  { id: "termos-tecnicos", label: "Termos técnicos" },
   { id: "entrada", label: "Entrada" },
   { id: "clutch", label: "Clutch" },
   { id: "economia", label: "Economia" },
