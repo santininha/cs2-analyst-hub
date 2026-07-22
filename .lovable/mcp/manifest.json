@@ -1,0 +1,148 @@
+{
+  "version": 1,
+  "sdk_version": "0.24.0",
+  "path": "/mcp",
+  "auth": {
+    "type": "none"
+  },
+  "mcp": {
+    "server": {
+      "name": "cs2-analyst-hub-mcp",
+      "version": "0.1.0",
+      "title": "CS2 Analyst Hub"
+    },
+    "tools": [
+      {
+        "name": "list_teams",
+        "title": "List CS2 teams",
+        "description": "List the CS2 teams tracked by the workspace (top 20 world ranking plus legacy Brazilian teams). Returns id, name, tag, region, world rank, GRID id when enriched, and brand colors.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "region": {
+              "description": "Optional region filter, e.g. 'Europe', 'South America'.",
+              "type": "string"
+            },
+            "limit": {
+              "description": "Max number of teams to return.",
+              "type": "integer",
+              "exclusiveMinimum": 0,
+              "maximum": 9007199254740991
+            }
+          }
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "get_team",
+        "title": "Get team details",
+        "description": "Get a single CS2 team by id, including its current roster (nick, real name, role, rating, K/D, ADR, CT/TR ratings).",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "description": "Team id, e.g. 'furia', 'navi', 'vitality'."
+            }
+          },
+          "required": [
+            "id"
+          ]
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "list_matches",
+        "title": "List CS2 matches",
+        "description": "List CS2 matches known to the workspace (mock + curated). Filter by status (upcoming / live / finished) and optionally by team id.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "status": {
+              "type": "string",
+              "enum": [
+                "upcoming",
+                "live",
+                "finished"
+              ]
+            },
+            "teamId": {
+              "description": "Only return matches involving this team id.",
+              "type": "string"
+            },
+            "limit": {
+              "type": "integer",
+              "exclusiveMinimum": 0,
+              "maximum": 9007199254740991
+            }
+          }
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "get_active_map_pool",
+        "title": "Get CS2 active map pool",
+        "description": "Get the current CS2 Active Duty map pool tracked by the workspace, including season label, last-verified timestamp, active maps and recently removed maps.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {}
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "search_glossary",
+        "title": "Search caster glossary",
+        "description": "Search the caster glossary (palavras-chave, expressões, termos técnicos) by free-text query. Returns matching terms with their definition and category.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "query": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Free-text query matched against term and definition."
+            },
+            "limit": {
+              "type": "integer",
+              "exclusiveMinimum": 0,
+              "maximum": 9007199254740991
+            }
+          },
+          "required": [
+            "query"
+          ]
+        },
+        "outputSchema": null
+      }
+    ]
+  }
+}
