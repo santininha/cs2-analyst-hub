@@ -5,7 +5,7 @@ import {
   getGridRosters,
   type GridTeam,
   type GridPlayer,
-} from "@/server/grid.functions";
+} from "@/lib/data-fns/grid.functions";
 
 type TeamsContextValue = {
   teams: Team[];

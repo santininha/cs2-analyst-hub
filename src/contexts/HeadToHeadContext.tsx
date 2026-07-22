@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 import { useTeams } from "./TeamsContext";
-import { getGridHeadToHead, type H2HResponse } from "@/server/headToHead.functions";
+import { getGridHeadToHead, type H2HResponse } from "@/lib/data-fns/headToHead.functions";
 
 type H2HContextValue = {
   loading: boolean;
